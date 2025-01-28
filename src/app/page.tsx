@@ -9,7 +9,7 @@ export default function Home() {
     { name: "מכונה 1" },
     { name: "מכונה 2" },
     { name: "מכונה 3" },
-    { name: "מכונה 4" },
+    { name: "מכונה 14" },
   ];
 
   const handleNavigate = (machineName: string) => {
