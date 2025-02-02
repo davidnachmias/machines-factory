@@ -1,6 +1,7 @@
 'use client';
 
 import React from "react";
+import axios from "axios";
 
 export default function AddMachineForm() {
   const handleSubmit = async (e: React.FormEvent) => {
@@ -12,19 +13,20 @@ export default function AddMachineForm() {
       machineType: formData.get('machineType') as string,
     };
 
-    const response = await fetch('/api/add-machine', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await axios.post('/api/add-machine', data, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (response.ok) {
-      alert('Machine added successfully!');
-    } else {
-      const errorData = await response.json();
-      alert(`Failed to add machine: ${errorData.error}`);
+      if (response.status === 200) {
+        alert('Machine added successfully!');
+      } else {
+        alert(`Failed to add machine: ${response.data.error}`);
+      }
+    } catch (error: any) {
+      alert(`Failed to add machine: ${error.message}`);
     }
   };
 

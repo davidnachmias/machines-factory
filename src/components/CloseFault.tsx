@@ -1,61 +1,84 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+interface Fault {
+    _id: string;
+    machineName: string;
+    machineType: string;
+    formType: string;
+    description: string;
+    date: string;
+    status: string; // חדש: שדה סטטוס
+}
 
 export default function CloseFault() {
-    // הגדרת משתנים עבור המידע שיש להציג
-    const [machineName, setMachineName] = useState("מכונה 1");
-    const [faultDescription, setFaultDescription] = useState("התקלה במערכת החשמל");
-    const [parts, setParts] = useState("חוטים, מתג");
-    const [cost, setCost] = useState('500 ש"ח');
-    const [openingDate, setOpeningDate] = useState("01/01/2025");
+    const [faults, setFaults] = useState<Fault[]>([]);
+    const [selectedFault, setSelectedFault] = useState<Fault | null>(null);
 
-    // טיפול בהגשה של הטופס
-    const handleCloseFault = () => {
-        // כאן תוכל להוסיף את הלוגיקה של סגירת התקלה
-        console.log("התקלה נסגרה");
+    useEffect(() => {
+        const fetchFaults = async () => {
+            try {
+                const response = await axios.get<Fault[]>('/api/open-faults');
+                setFaults(response.data);
+            } catch (error) {
+                console.error("Error fetching faults:", error);
+            }
+        };
+
+        fetchFaults();
+    }, []);
+
+    const handleCloseFault = async (fault: Fault) => {
+        try {
+            const response = await axios.post('/api/close-fault', { faultId: fault._id });
+            if (response.status === 200) {
+                alert('Fault closed successfully!');
+                setFaults(faults.filter(f => f._id !== fault._id));
+            } else {
+                alert(`Failed to close fault: ${response.data.error}`);
+            }
+        } catch (error: any) {
+            alert(`Failed to close fault: ${error.message}`);
+        }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="bg-white rounded-xl shadow-xl p-10 w-full max-w-lg space-y-8 transform transition-all hover:scale-105 hover:shadow-2xl duration-300">
-                <h1 className="text-3xl font-semibold text-center text-gray-800">סגירת תקלה</h1>
-                
-                <div className="space-y-6">
-                    <div className="flex justify-between">
-                        <span className="text-lg text-gray-600">שם מכונה:</span>
-                        <p className="text-lg font-medium text-gray-800">{machineName}</p>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="text-lg text-gray-600">מהות התקלה:</span>
-                        <p className="text-lg font-medium text-gray-800">{faultDescription}</p>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="text-lg text-gray-600">חלפים:</span>
-                        <p className="text-lg font-medium text-gray-800">{parts}</p>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="text-lg text-gray-600">עלות:</span>
-                        <p className="text-lg font-medium text-gray-800">{cost}</p>
-                    </div>
-
-                    <div className="flex justify-between">
-                        <span className="text-lg text-gray-600">תאריך פתיחה:</span>
-                        <p className="text-lg font-medium text-gray-800">{openingDate}</p>
-                    </div>
-                </div>
-
-                <div className="text-center">
-                    <button
-                        onClick={handleCloseFault}
-                        className="w-full py-3 mt-4 bg-green-600 text-white rounded-xl shadow-md hover:bg-green-700 transition-all hover:shadow-2xl transform duration-300"
-                    >
-                        אישור
-                    </button>
-                </div>
+        <div className="flex flex-col items-center min-h-screen p-8">
+            <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">סגירת תקלה</h1>
+            <div className="w-full max-w-6xl">
+                <table className="min-w-full bg-white">
+                    <thead>
+                        <tr>
+                            <th className="py-2 px-4 border-b">שם מכונה</th>
+                            <th className="py-2 px-4 border-b">סוג מכונה</th>
+                            <th className="py-2 px-4 border-b">סוג פעולה</th> {/* חדש: סוג פעולה */}
+                            <th className="py-2 px-4 border-b">תאריך פתיחה</th>
+                            <th className="py-2 px-4 border-b">תיאור התקלה</th>
+                            <th className="py-2 px-4 border-b">פעולה</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {faults.map((fault, index) => (
+                            <tr key={index}>
+                                <td className="py-2 px-4 border-b">{fault.machineName}</td>
+                                <td className="py-2 px-4 border-b">{fault.machineType}</td>
+                                <td className="py-2 px-4 border-b">{fault.formType}</td> {/* חדש: סוג פעולה */}
+                                <td className="py-2 px-4 border-b">{fault.date}</td>
+                                <td className="py-2 px-4 border-b">{fault.description}</td>
+                                <td className="py-2 px-4 border-b">
+                                    <button
+                                        onClick={() => handleCloseFault(fault)}
+                                        className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                                    >
+                                        סגור תקלה
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );

@@ -1,25 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import clientPromise from '@/lib/mongodb';
-
-interface Machine {
-  machineName: string;
-  machineType: string;
-}
+import dbConnect from '@/lib/dbConnect';
+import Machine from '@/models/Machine';
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const client = await clientPromise;
-    const dbName = process.env.MONGODB_DBNAME as string; // קבלת שם הדאטהבייס מהסביבה
-    if (!dbName) {
-      throw new Error("Database name is not defined in environment variables.");
-    }
+    await dbConnect();
 
-    const db = client.db(dbName); // שימוש בשם מהסביבה
-    const collection = db.collection('machines');
+    const { machineName, machineType }: { machineName: string; machineType: string } = await req.json();
 
-    const { machineName, machineType }: Machine = await req.json();
-
-    await collection.insertOne({ name: machineName, type: machineType });
+    const newMachine = new Machine({ name: machineName, type: machineType });
+    await newMachine.save();
 
     return NextResponse.json({ message: 'Machine added successfully!' }, { status: 200 });
   } catch (error: any) {
