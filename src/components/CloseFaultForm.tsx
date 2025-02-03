@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import axios from "axios";
-
-interface Fault {
-    _id: string;
-    machineName: string;
-    machineType: string;
-    formType: string;
-    description: string;
-    date: string;
-    status: string;
-}
+import { Fault } from "@/models/Machine";
 
 interface CloseFaultFormProps {
     fault: Fault;

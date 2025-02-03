@@ -1,15 +1,10 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-interface Machine {
-    _id: string;
-    name: string;
-    type: string;
-}
+import { IMachine } from '@/models/Machine';
 
 const FaultForm: React.FC = () => {
-    const [machines, setMachines] = useState<Machine[]>([]);
+    const [machines, setMachines] = useState<IMachine[]>([]);
     const [selectedMachine, setSelectedMachine] = useState<string>('');
     const [formType, setFormType] = useState<string>('תקלה');
     const [description, setDescription] = useState<string>('');
@@ -18,7 +13,7 @@ const FaultForm: React.FC = () => {
     useEffect(() => {
         const fetchMachines = async () => {
             try {
-                const response = await axios.get<Machine[]>('/api/machines');
+                const response = await axios.get<IMachine[]>('/api/machines');
                 setMachines(response.data);
             } catch (error) {
                 console.error("Error fetching machines:", error);
@@ -91,7 +86,7 @@ const FaultForm: React.FC = () => {
                 >
                     <option value="">בחר מכונה</option>
                     {machines.map(machine => (
-                        <option key={machine._id} value={machine._id}>{machine.name}</option>
+                        <option key={String(machine._id)} value={String(machine._id)}>{machine.name}</option>
                     ))}
                 </select>
             </div>

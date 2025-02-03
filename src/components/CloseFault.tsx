@@ -4,16 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PasswordPopup from "./PasswordPopup";
 import CloseFaultForm from "./CloseFaultForm";
-
-interface Fault {
-  _id: string;
-  machineName: string;
-  machineType: string;
-  formType: string;
-  description: string;
-  date: string;
-  status: string;
-}
+import  { Fault } from "@/models/Machine";
 
 export default function CloseFault() {
   const [faults, setFaults] = useState<Fault[]>([]);

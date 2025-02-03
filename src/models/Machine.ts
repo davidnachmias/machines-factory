@@ -2,7 +2,9 @@ import mongoose, { Document, Model, Schema } from 'mongoose';
 
 export interface Fault {
     _id: string;
-    formType: string;
+    machineName?: string;
+    machineType?: string;
+      formType: string;
     description: string;
     date: string;
     status: string; // חדש: שדה סטטוס
