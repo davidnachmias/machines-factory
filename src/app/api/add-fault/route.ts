@@ -22,7 +22,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       status: 'open', // חדש: סטטוס התקלה
     };
 
-    console.log('-----------------',fault);
     machine.faults.push(fault);
     await machine.save();
 

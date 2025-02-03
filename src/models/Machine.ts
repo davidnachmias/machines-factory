@@ -4,10 +4,13 @@ export interface Fault {
     _id: string;
     machineName?: string;
     machineType?: string;
-      formType: string;
+    formType: string;
     description: string;
     date: string;
-    status: string; // חדש: שדה סטטוס
+    status: string;
+    closedDate?: string;
+    partsUsed?: string;
+    repairCost?: number;
 }
 
 export interface IMachine extends Document {
@@ -37,7 +40,19 @@ const FaultSchema: Schema = new Schema({
     status: {
         type: String,
         required: true,
-        default: 'פתוחה', // ברירת מחדל: פתוחה
+        default: 'open',
+    },
+    closedDate: {
+        type: String,
+        required: false,
+    },
+    partsUsed: {
+        type: String,
+        required: false,
+    },
+    repairCost: {
+        type: Number,
+        required: false,
     },
 });
 

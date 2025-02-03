@@ -6,7 +6,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await dbConnect();
 
-    const { faultId } = await req.json();
+    const { faultId, partsUsed, repairCost } = await req.json();
 
     const machine = await Machine.findOne({ 'faults._id': faultId });
     if (!machine) {
@@ -16,6 +16,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const fault = machine.faults.find(fault => fault._id === faultId);
     if (fault) {
       fault.status = 'closed';
+      fault.closedDate = new Date().toISOString();
+      fault.partsUsed = partsUsed;
+      fault.repairCost = repairCost;
       await machine.save();
     }
 

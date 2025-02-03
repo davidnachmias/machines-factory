@@ -18,7 +18,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                 partsUsed,
                 repairCost,
             });
-
+            console.log(partsUsed, repairCost,'sdlfl;djgl;jg');            
             if (response.status === 200) {
                 alert('התקלה נסגרה בהצלחה!');
                 onClose();

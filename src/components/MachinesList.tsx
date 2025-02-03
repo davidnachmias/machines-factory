@@ -23,9 +23,9 @@ const MachinesList: React.FC = () => {
         fetchMachines();
     }, []);
 
-    const handleNavigate = (machineName: string) => {
-        router.push(`/machineDetails/${decodeURI(machineName)}`);
-    };
+    const handleNavigate = (machine: IMachine) => {
+      router.push(`/machineDetails/${encodeURIComponent(machine.name)}?machine=${encodeURIComponent(JSON.stringify(machine))}`);
+  };
 
     const filteredMachines = machines.filter((machine) =>
         machine.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -45,7 +45,7 @@ const MachinesList: React.FC = () => {
             filteredMachines.map((machine) => (
               <button
                 key={String(machine._id)} // שימוש ב-ID במקום index
-                onClick={() => handleNavigate(machine.name)}
+                onClick={() => handleNavigate(machine)}
                 className="w-full px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
               >
                 {machine.name}
