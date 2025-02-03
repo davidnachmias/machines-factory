@@ -15,7 +15,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const fault = machine.faults.find(fault => fault._id === faultId);
     if (fault) {
-      fault.status = 'סגורה';
+      fault.status = 'closed';
       await machine.save();
     }
 

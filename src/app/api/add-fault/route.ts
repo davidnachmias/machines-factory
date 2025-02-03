@@ -19,9 +19,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       formType,
       description,
       date,
-      status: 'פתוחה', // חדש: סטטוס התקלה
+      status: 'open', // חדש: סטטוס התקלה
     };
 
+    console.log('-----------------',fault);
     machine.faults.push(fault);
     await machine.save();
 

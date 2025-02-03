@@ -22,6 +22,7 @@ export default function CloseFault() {
             try {
                 const response = await axios.get<Fault[]>('/api/open-faults');
                 setFaults(response.data);
+                console.log(response.data, '----=---=');
             } catch (error) {
                 console.error("Error fetching faults:", error);
             }
@@ -53,7 +54,7 @@ export default function CloseFault() {
                         <tr>
                             <th className="py-2 px-4 border-b">שם מכונה</th>
                             <th className="py-2 px-4 border-b">סוג מכונה</th>
-                            <th className="py-2 px-4 border-b">סוג פעולה</th> {/* חדש: סוג פעולה */}
+                            <th className="py-2 px-4 border-b">סוג פעולה</th>
                             <th className="py-2 px-4 border-b">תאריך פתיחה</th>
                             <th className="py-2 px-4 border-b">תיאור התקלה</th>
                             <th className="py-2 px-4 border-b">פעולה</th>
@@ -64,7 +65,7 @@ export default function CloseFault() {
                             <tr key={index}>
                                 <td className="py-2 px-4 border-b">{fault.machineName}</td>
                                 <td className="py-2 px-4 border-b">{fault.machineType}</td>
-                                <td className="py-2 px-4 border-b">{fault.formType}</td> {/* חדש: סוג פעולה */}
+                                <td className="py-2 px-4 border-b">{fault.formType}</td>
                                 <td className="py-2 px-4 border-b">{fault.date}</td>
                                 <td className="py-2 px-4 border-b">{fault.description}</td>
                                 <td className="py-2 px-4 border-b">

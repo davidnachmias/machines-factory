@@ -8,14 +8,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const machines = await Machine.find({
       $or: [
-        { 'faults.status': 'פתוחה' },
+        { 'faults.status': 'open' },
         { 'faults.status': { $exists: false } }
       ]
     });
 
     const openFaults = machines.flatMap(machine => 
       machine.faults
-        .filter(fault => fault.status === 'פתוחה' || !fault.status)
+        .filter(fault => fault.status === 'open' || !fault.status)
         .map(fault => ({
           _id: fault._id,
           machineName: machine.name,
