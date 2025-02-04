@@ -11,7 +11,7 @@ const ExportToExcel: React.FC<ExportToExcelProps> = ({ data }) => {
     const translatedData = data.map((row) => ({
       "שם מכונה": row.machineName,
       "סוג מכונה": row.machineType,
-      "סה\"כ זמן השבתה": row.empty ? '' :`${row.downtimeDays} ימים, ${row.downtimeHours} שעות, ${row.downtimeMinutes} דקות`,
+      "סה\"כ זמן השבתה": row.empty ? '' : `${row.downtimeDays} ימים, ${row.downtimeHours} שעות, ${row.downtimeMinutes} דקות`,
       "עלות תיקון": row.repairCost ? `${row.repairCost} ₪` : "",
     }));
 
@@ -41,6 +41,10 @@ const ExportToExcel: React.FC<ExportToExcelProps> = ({ data }) => {
           const currentWidth = ws["!cols"][colIndex]?.width ?? 20; // אם undefined, תן ערך ברירת מחדל של 20
           ws["!cols"][colIndex].width = Math.max(currentWidth, valueLength + 2); // הגדרת רוחב אופטימלי
           
+          // הגדרת כיוון RTL על כל תא
+          if (cell.v) {
+            cell.s = { alignment: { textRotation: 0, horizontal: "right", vertical: "center" } };
+          }
         }
       });
     });
@@ -57,7 +61,7 @@ const ExportToExcel: React.FC<ExportToExcelProps> = ({ data }) => {
     <div>
       <button
         onClick={handleExport}
-        className="bg-blue-500 text-white p-2 rounded"
+        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 mt-5"
       >
         יצא לאקסל
       </button>
