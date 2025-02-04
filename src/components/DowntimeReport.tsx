@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExportToExcel from "./ExportToExcel";
+import ExportToExcelAndSendToEmail from "./ExportToExcelAndSendToMail";
 
 interface ClosedFault {
     machineName: string;
@@ -129,6 +130,30 @@ export default function DowntimeReport() {
             </table>
 
             <ExportToExcel
+                data={[
+                    ...filteredFaults.map((fault) => ({
+                        machineName: fault.machineName,
+                        machineType: fault.machineType,
+                        downtimeDays: fault.downtimeDays,
+                        downtimeHours: fault.downtimeHours,
+                        downtimeMinutes: fault.downtimeMinutes,
+                        repairCost: fault.repairCost ? `${fault.repairCost}` : "לא זמין"
+                    })),
+                    {
+                        empty: 1,
+                    },
+                    // הוספת שורת סה"כ
+                    {
+                        machineType: "",
+                        downtimeDays: totalDowntime.days,
+                        downtimeHours: totalDowntime.hours,
+                        downtimeMinutes: totalDowntime.minutes,
+                        repairCost: `${totalRepairCost}`
+                    }
+                ]}
+            />
+
+<ExportToExcelAndSendToEmail
                 data={[
                     ...filteredFaults.map((fault) => ({
                         machineName: fault.machineName,
