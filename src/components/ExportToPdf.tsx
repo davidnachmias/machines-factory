@@ -91,8 +91,8 @@ export default function ExportToPDF({ data }: ExportToPDFProps) {
   };
 
   return (
-    <button onClick={generatePDF} className="bg-red-500 text-white px-4 py-2 rounded mt-4">
-      ייצא ל-PDF
+    <button onClick={generatePDF} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+      הורד PDF
     </button>
   );
 }

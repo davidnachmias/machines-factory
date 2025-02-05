@@ -1,9 +1,10 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExportToExcel from "./ExportToExcel";
-import ExportToExcelAndSendToEmail from "./ExportToExcelAndSendToMail";
+import ExportToExcelAndSendToMail from "./ExportToExcelAndSendToMail";
 import ExportToPDF from "./ExportToPdf";
+import ExportToPDFAndSendToMail from "./ExportToPdfAndSendToMail";
 
 interface ClosedFault {
     machineName: string;
@@ -102,7 +103,7 @@ export default function DowntimeReport() {
     }, [selectedMachine, closedFaults]);
 
     return (
-        <div className="p-8">
+        <div className="p-8 mt-10">
             <h2 className="text-xl font-bold mb-4">דוח השבתה ועלות</h2>
 
             <div className="mb-4">
@@ -119,7 +120,7 @@ export default function DowntimeReport() {
                 </select>
             </div>
 
-            <table className="min-w-full bg-white border border-gray-300 shadow-md">
+            <table className="min-w-full bg-white border border-gray-300 shadow-md mb-4">
                 <thead>
                     <tr className="bg-gray-200">
                         <th className="border p-2">שם מכונה</th>
@@ -141,7 +142,7 @@ export default function DowntimeReport() {
                     ))}
                     {filteredFaults.length > 0 && (
                         <tr className="bg-gray-300 font-bold">
-                            <td className="border p-2 text-center" colSpan={2}>עלות כוללת</td>
+                            <td className="border p-2 text-center" colSpan={2}>סך הכל</td>
                             <td className="border p-2">
                                 {totalDowntime.days ?? 0} ימים, {totalDowntime.hours ?? 0} שעות, {totalDowntime.minutes ?? 0} דקות
                             </td>
@@ -151,9 +152,10 @@ export default function DowntimeReport() {
                 </tbody>
             </table>
 
-            <ExportToExcel data={formattedData} />
-        <ExportToExcelAndSendToEmail data={formattedData} />
-        <ExportToPDF data={formattedData} /> {/* כפתור חדש לייצוא ל-PDF */}
+            <div className="min-w-full flex mt-6 justify-evenly">
+                <ExportToPDF data={formattedData}  />
+                <ExportToPDFAndSendToMail data={formattedData}  />
+            </div>
         </div>
     );
 }
