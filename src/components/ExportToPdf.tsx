@@ -11,7 +11,7 @@ interface ExportToPDFProps {
     downtimeHours?: number;
     downtimeMinutes?: number;
     repairCost?: string;
-    totalRepairCost?: string; // העלות הכוללת
+    empty?: number;
   }[];
 }
 
@@ -51,11 +51,14 @@ export default function ExportToPDF({ data }: ExportToPDFProps) {
     ];
 
     const tableRows: any[] = [];
+    console.log(data, "data");
+    
 
     data.forEach((fault) => {
-        if (fault.machineName || fault.machineType === "סה\"כ") {
-            // חישוב סה"כ זמן השבתה
-            const totalDowntime = calculateDowntime(
+        if (fault.empty) {
+            tableRows.push(["", "", "", ""]);   // הוספת שורה ריקה  לפרד בין הנתונים לסיכום
+        }else{
+        const totalDowntime = calculateDowntime(
                 fault.downtimeDays ?? 0,
                 fault.downtimeHours ?? 0,
                 fault.downtimeMinutes ?? 0
@@ -69,15 +72,6 @@ export default function ExportToPDF({ data }: ExportToPDFProps) {
             ]);
         }
     });
-
-    // הוספת שורה עם העלות הכוללת
-    const totalRepairCost = data[0]?.totalRepairCost || "0 ₪";  // לוקח את העלות הכוללת ממידע הנתונים
-    tableRows.push([
-        fixHebrewText(totalRepairCost),
-        fixHebrewText(""),
-        fixHebrewText(""),
-        fixHebrewText('עלות כוללת'),
-    ]);
 
     // יצירת הטבלה
     autoTable(doc, {

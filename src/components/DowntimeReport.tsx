@@ -38,7 +38,7 @@ export default function DowntimeReport() {
             empty: 1,
         },
         {
-            machineType: 'עלות כוללת',
+            machineType: 'סך הכל',
             downtimeDays: totalDowntime.days,
             downtimeHours: totalDowntime.hours,
             downtimeMinutes: totalDowntime.minutes,
