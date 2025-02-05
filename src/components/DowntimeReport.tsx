@@ -103,7 +103,7 @@ export default function DowntimeReport() {
     }, [selectedMachine, closedFaults]);
 
     return (
-        <div className="p-8 mt-10">
+        <div className="p-8 mt-10 flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4">דוח השבתה ועלות</h2>
 
             <div className="mb-4">
@@ -153,8 +153,8 @@ export default function DowntimeReport() {
             </table>
 
             <div className="min-w-full flex mt-6 justify-evenly">
-                <ExportToPDF data={formattedData}  />
-                <ExportToPDFAndSendToMail data={formattedData}  />
+                <ExportToPDF data={formattedData} sendToMail={false}  />
+                <ExportToPDF data={formattedData} sendToMail={true} />
             </div>
         </div>
     );

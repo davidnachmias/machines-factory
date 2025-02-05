@@ -31,6 +31,8 @@ export default function AddMachineForm() {
   };
 
   return (
+    <div className="p-8 mt-10 flex flex-col items-center">
+      <h1 className="text-xl font-bold mb-8">הוספת מכונה</h1>
     <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6 w-full max-w-md">
       <div className="w-full">
         <label htmlFor="machineName" className="block text-right mb-2">
@@ -65,5 +67,6 @@ export default function AddMachineForm() {
         הוסף מכונה
       </button>
     </form>
+    </div>
   );
 }

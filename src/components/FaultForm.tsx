@@ -75,6 +75,8 @@ const FaultForm: React.FC = () => {
     };
 
     return (
+        <div className='p-8 mt-10'>
+            <h1 className="text-xl font-bold mb-10">הוספת תקלה/טיפול תקופתי</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
             <div>
                 <label htmlFor="machine" className="block text-sm font-medium text-gray-700">בחר מכונה</label>
@@ -128,6 +130,7 @@ const FaultForm: React.FC = () => {
                 {submitLabel}
             </button>
         </form>
+        </div>
     );
 };
 

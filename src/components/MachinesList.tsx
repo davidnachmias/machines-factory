@@ -33,6 +33,8 @@ const MachinesList: React.FC = () => {
    
 
       return (
+        <div className="p-8 mt-10 flex flex-col items-center">
+            <h1 className="text-xl font-bold mb-8">מכונות קיימות</h1>
         <div className="flex flex-col items-center gap-4 w-full max-w-md">
           <input
             type="text"
@@ -54,6 +56,7 @@ const MachinesList: React.FC = () => {
           ) : (
             <p className="text-gray-500">לא נמצאו מכונות</p>
           )}
+        </div>
         </div>
       );
     };

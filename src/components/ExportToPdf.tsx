@@ -13,9 +13,10 @@ interface ExportToPDFProps {
     repairCost?: string;
     empty?: number;
   }[];
+  sendToMail?: boolean;
 }
 
-export default function ExportToPDF({ data }: ExportToPDFProps) {
+export default function ExportToPDF({ data, sendToMail }: ExportToPDFProps) {
   // פונקציה לבדיקה אם טקסט הוא בעברית בלבד
   const isHebrew = (text: string) => /^[\u0590-\u05FF\s]+$/.test(text);
 
@@ -52,13 +53,12 @@ export default function ExportToPDF({ data }: ExportToPDFProps) {
 
     const tableRows: any[] = [];
     console.log(data, "data");
-    
 
     data.forEach((fault) => {
         if (fault.empty) {
             tableRows.push(["", "", "", ""]);   // הוספת שורה ריקה  לפרד בין הנתונים לסיכום
-        }else{
-        const totalDowntime = calculateDowntime(
+        } else {
+            const totalDowntime = calculateDowntime(
                 fault.downtimeDays ?? 0,
                 fault.downtimeHours ?? 0,
                 fault.downtimeMinutes ?? 0
@@ -87,12 +87,46 @@ export default function ExportToPDF({ data }: ExportToPDFProps) {
         },
     });
 
-    doc.save("downtime_report.pdf");
+    if (sendToMail) {
+        // שמירת הקובץ בפורמט PDF
+        const pdfBlob = doc.output("blob");
+
+        // שליחה לשרת
+        const formData = new FormData();
+        formData.append("file", pdfBlob, "downtime_report.pdf");
+
+        fetch("/api/send-email", {
+            method: "POST",
+            body: formData,
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                alert(data.message || "Email sent successfully!");
+            })
+            .catch((error) => {
+                alert("Error sending email");
+            });
+
+    } else {
+        doc.save("downtime_report.pdf");
+    }
   };
 
   return (
-    <button onClick={generatePDF} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
-      הורד PDF
-    </button>
+    sendToMail ? (
+        <button
+            onClick={generatePDF}
+            className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200"
+        >
+            שלח למייל PDF
+        </button>
+    ) : (
+        <button
+            onClick={generatePDF}
+            className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200"
+        >
+            הורד PDF
+        </button>
+    )
   );
 }

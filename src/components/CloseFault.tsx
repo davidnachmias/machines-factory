@@ -35,7 +35,7 @@ export default function CloseFault() {
   };
 
   return (
-    <div className="flex flex-col items-center max-h-screen p-8">
+    <div className="flex flex-col items-center max-h-screen p-8 mt-10">
       <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
         סגירת תקלה
       </h1>
