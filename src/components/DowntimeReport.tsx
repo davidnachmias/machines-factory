@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExportToExcel from "./ExportToExcel";
 import ExportToExcelAndSendToEmail from "./ExportToExcelAndSendToMail";
+import ExportToPDF from "./ExportToPdf";
 
 interface ClosedFault {
     machineName: string;
@@ -24,6 +25,27 @@ export default function DowntimeReport() {
     const [totalDowntime, setTotalDowntime] = useState({ days: 0, hours: 0, minutes: 0 });
     const [totalRepairCost, setTotalRepairCost] = useState(0);
 
+    const formattedData = [
+        ...filteredFaults.map((fault) => ({
+            machineName: fault.machineName,
+            machineType: fault.machineType,
+            downtimeDays: fault.downtimeDays,
+            downtimeHours: fault.downtimeHours,
+            downtimeMinutes: fault.downtimeMinutes,
+            repairCost: fault.repairCost ? `${fault.repairCost}` : "לא זמין"
+        })),
+        {
+            empty: 1,
+        },
+        {
+            machineType: 'עלות כוללת',
+            downtimeDays: totalDowntime.days,
+            downtimeHours: totalDowntime.hours,
+            downtimeMinutes: totalDowntime.minutes,
+            repairCost: `${totalRepairCost}`
+        }
+    ];
+    
     useEffect(() => {
         const fetchClosedFaults = async () => {
             try {
@@ -102,7 +124,7 @@ export default function DowntimeReport() {
                     <tr className="bg-gray-200">
                         <th className="border p-2">שם מכונה</th>
                         <th className="border p-2">סוג מכונה</th>
-                        <th className="border p-2">סה"כ זמן השבתה</th>
+                        <th className="border p-2">זמן השבתה</th>
                         <th className="border p-2">עלות תיקון</th>
                     </tr>
                 </thead>
@@ -119,7 +141,7 @@ export default function DowntimeReport() {
                     ))}
                     {filteredFaults.length > 0 && (
                         <tr className="bg-gray-300 font-bold">
-                            <td className="border p-2 text-center" colSpan={2}>סה"כ</td>
+                            <td className="border p-2 text-center" colSpan={2}>עלות כוללת</td>
                             <td className="border p-2">
                                 {totalDowntime.days ?? 0} ימים, {totalDowntime.hours ?? 0} שעות, {totalDowntime.minutes ?? 0} דקות
                             </td>
@@ -129,53 +151,9 @@ export default function DowntimeReport() {
                 </tbody>
             </table>
 
-            <ExportToExcel
-                data={[
-                    ...filteredFaults.map((fault) => ({
-                        machineName: fault.machineName,
-                        machineType: fault.machineType,
-                        downtimeDays: fault.downtimeDays,
-                        downtimeHours: fault.downtimeHours,
-                        downtimeMinutes: fault.downtimeMinutes,
-                        repairCost: fault.repairCost ? `${fault.repairCost}` : "לא זמין"
-                    })),
-                    {
-                        empty: 1,
-                    },
-                    // הוספת שורת סה"כ
-                    {
-                        machineType: "",
-                        downtimeDays: totalDowntime.days,
-                        downtimeHours: totalDowntime.hours,
-                        downtimeMinutes: totalDowntime.minutes,
-                        repairCost: `${totalRepairCost}`
-                    }
-                ]}
-            />
-
-<ExportToExcelAndSendToEmail
-                data={[
-                    ...filteredFaults.map((fault) => ({
-                        machineName: fault.machineName,
-                        machineType: fault.machineType,
-                        downtimeDays: fault.downtimeDays,
-                        downtimeHours: fault.downtimeHours,
-                        downtimeMinutes: fault.downtimeMinutes,
-                        repairCost: fault.repairCost ? `${fault.repairCost}` : "לא זמין"
-                    })),
-                    {
-                        empty: 1,
-                    },
-                    // הוספת שורת סה"כ
-                    {
-                        machineType: "",
-                        downtimeDays: totalDowntime.days,
-                        downtimeHours: totalDowntime.hours,
-                        downtimeMinutes: totalDowntime.minutes,
-                        repairCost: `${totalRepairCost}`
-                    }
-                ]}
-            />
+            <ExportToExcel data={formattedData} />
+        <ExportToExcelAndSendToEmail data={formattedData} />
+        <ExportToPDF data={formattedData} /> {/* כפתור חדש לייצוא ל-PDF */}
         </div>
     );
 }
