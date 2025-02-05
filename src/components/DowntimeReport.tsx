@@ -1,10 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import ExportToExcel from "./ExportToExcel";
-import ExportToExcelAndSendToMail from "./ExportToExcelAndSendToMail";
 import ExportToPDF from "./ExportToPdf";
-import ExportToPDFAndSendToMail from "./ExportToPdfAndSendToMail";
 
 interface ClosedFault {
     machineName: string;
