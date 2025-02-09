@@ -18,7 +18,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                 partsUsed,
                 repairCost,
             });
-            console.log(partsUsed, repairCost,'sdlfl;djgl;jg');            
+            console.log(partsUsed, repairCost, 'sdlfl;djgl;jg');
             if (response.status === 200) {
                 alert('התקלה נסגרה בהצלחה!');
                 onClose();
@@ -60,11 +60,15 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                     onChange={(e) => setPartsUsed(e.target.value)}
                 />
                 <input
-                    type="number"
+                    type="string"
                     placeholder="עלות תיקון"
                     className="border p-2 mb-4 w-full"
                     value={repairCost}
-                    onChange={(e) => setRepairCost(e.target.value)}
+                    step="0.01"
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*\.?\d*$/.test(value)) setRepairCost(value);
+                    }}
                 />
 
                 {/* כפתורים */}

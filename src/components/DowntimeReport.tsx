@@ -31,7 +31,7 @@ export default function DowntimeReport() {
             downtimeDays: fault.downtimeDays,
             downtimeHours: fault.downtimeHours,
             downtimeMinutes: fault.downtimeMinutes,
-            repairCost: fault.repairCost ? `${fault.repairCost}` : "לא זמין"
+            repairCost: fault.repairCost ? `${fault.repairCost.toFixed(2)}` : "לא זמין"
         })),
         {
             empty: 1,
@@ -41,7 +41,7 @@ export default function DowntimeReport() {
             downtimeDays: totalDowntime.days,
             downtimeHours: totalDowntime.hours,
             downtimeMinutes: totalDowntime.minutes,
-            repairCost: `${totalRepairCost}`
+            repairCost: `${totalRepairCost.toFixed(2)}`
         }
     ];
     
@@ -144,7 +144,7 @@ export default function DowntimeReport() {
                             <td className="border p-2">
                                 {totalDowntime.days ?? 0} ימים, {totalDowntime.hours ?? 0} שעות, {totalDowntime.minutes ?? 0} דקות
                             </td>
-                            <td className="border p-2">{totalRepairCost} ₪</td>
+                            <td className="border p-2">{totalRepairCost.toFixed(2)} ₪</td>
                         </tr>
                     )}
                 </tbody>
