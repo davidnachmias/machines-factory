@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExportToPDF from "./ExportToPdf";
+import ExportToExcel from "./ExportToExcel";
 
 interface ClosedFault {
     machineName: string;
@@ -152,6 +153,8 @@ export default function DowntimeReport() {
             <div className="min-w-full flex mt-6 justify-evenly">
                 <ExportToPDF data={formattedData} sendToMail={false}  />
                 <ExportToPDF data={formattedData} sendToMail={true} />
+                <ExportToExcel data={formattedData} sendToMail={false}/>
+                <ExportToExcel data={formattedData} sendToMail={true}/>
             </div>
         </div>
     );

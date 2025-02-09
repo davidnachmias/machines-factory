@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-import fs from "fs";
-import path from "path";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    // קריאת גוף הבקשה (הקובץ ה-PDF)
     const formData = await req.formData();
     const file = formData.get("file") as Blob;
 
@@ -30,10 +27,10 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       from: process.env.GMAIL_USER, // שליפה מהקובץ .env.local
       to: process.env.GMAIL_USER, // שליחה למייל שלך
       subject: "דוח השבתה",
-      text: "מצורף דוח השבתה ב-PDF", // טקסט מלווה
+      text: "מצורף דוח השבתה", // טקסט מלווה
       attachments: [
         {
-          filename: "downtime_report.pdf",
+          filename: (formData.get("file") as File).name,
           content: fileBuffer,
         },
       ],
