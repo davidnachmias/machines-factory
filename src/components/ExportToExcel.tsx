@@ -16,24 +16,50 @@ interface ExportToExcelProps {
 
 const ExportToExcel: React.FC<ExportToExcelProps> = ({ data, sendToMail }) => {
   const handleExport = () => {
-    // הגדרת סדר עמודות הפוך כדי ש-Excel יציג אותן נכון
+    // סידור הנתונים לפי הסדר החדש
     const translatedData = data.map((row) => ({
-      "עלות תיקון": row.repairCost ? `${row.repairCost} ₪` : "",
-      "סה\"כ זמן השבתה": row.empty
+      "שם מכונה": row.machineName,
+      "סוג מכונה": row.machineType,
+      'סה"כ זמן השבתה': row.empty
         ? ""
         : `${row.downtimeDays} ימים, ${row.downtimeHours} שעות, ${row.downtimeMinutes} דקות`,
-      "סוג מכונה": row.machineType,
-      "שם מכונה": row.machineName,
+      "עלות תיקון": row.repairCost ? `${row.repairCost} ₪` : "",
     }));
 
     // יצירת גיליון Excel
     const ws = XLSX.utils.json_to_sheet(translatedData, { skipHeader: false });
 
+    // הגדרת כיוון RTL והגדרות עיצוב לגיליון
+    ws['!dir'] = 'rtl';
+
+    // הגדרת סגנונות לכותרות
+    const headerStyle = {
+      fill: { fgColor: { rgb: "4F81BD" } }, // צבע רקע כחול
+      font: { color: { rgb: "FFFFFF" }, bold: true }, // טקסט לבן ומודגש
+      alignment: { horizontal: "right" }, // יישור לימין
+    };
+
     // הגדרת רוחב עמודות
-    ws["!cols"] = Object.keys(translatedData[0]).map(() => ({ width: 20 }));
+    ws["!cols"] = Object.keys(translatedData[0]).map(() => ({ width: 25 }));
+
+    // החלת סגנונות על כותרות
+    const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:D1');
+    for (let C = range.s.c; C <= range.e.c; ++C) {
+      const address = XLSX.utils.encode_col(C) + "1";
+      if (!ws[address]) continue;
+      ws[address].s = headerStyle;
+    }
 
     // יצירת חוברת עבודה
     const wb = XLSX.utils.book_new();
+    
+    // הגדרת כיוון RTL לחוברת העבודה
+    wb.Workbook = wb.Workbook || {};
+    wb.Workbook.Views = wb.Workbook.Views || [];
+    wb.Workbook.Views[0] = {
+      RTL: true,
+    };
+
     XLSX.utils.book_append_sheet(wb, ws, "דוח השבתה");
 
     if (sendToMail) {
@@ -53,10 +79,10 @@ const ExportToExcel: React.FC<ExportToExcelProps> = ({ data, sendToMail }) => {
       })
         .then((response) => response.json())
         .then((data) => {
-          alert(data.message || "Email sent successfully!");
+          alert(data.message || "הדוח נשלח בהצלחה!");
         })
         .catch(() => {
-          alert("Error sending email");
+          alert("שגיאה בשליחת הדוח");
         });
     } else {
       XLSX.writeFile(wb, "downtime_report.xlsx");
