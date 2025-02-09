@@ -16,48 +16,118 @@ interface ExportToExcelProps {
 
 const ExportToExcel: React.FC<ExportToExcelProps> = ({ data, sendToMail }) => {
   const handleExport = () => {
-    // סידור הנתונים לפי הסדר החדש
-    const translatedData = data.map((row) => ({
-      "שם מכונה": row.machineName,
-      "סוג מכונה": row.machineType,
-      'סה"כ זמן השבתה': row.empty
-        ? ""
-        : `${row.downtimeDays} ימים, ${row.downtimeHours} שעות, ${row.downtimeMinutes} דקות`,
-      "עלות תיקון": row.repairCost ? `${row.repairCost} ₪` : "",
+    // Prepare data with explicit cell formatting
+    const formattedData = data.map(row => ({
+      "שם מכונה": { v: row.machineName || "", t: 's' },
+      "סוג מכונה": { v: row.machineType || "", t: 's' },
+      'סה"כ זמן השבתה': {
+        v: row.empty ? "" : `${row.downtimeDays} ימים, ${row.downtimeHours} שעות, ${row.downtimeMinutes} דקות`,
+        t: 's'
+      },
+      "עלות תיקון": {
+        v: row.repairCost ? `${row.repairCost} ₪` : "",
+        t: 's',
+        z: '@',
+        s: {
+          alignment: {
+            horizontal: 'center',
+            vertical: 'center'
+          }
+        }
+      }
     }));
 
-    // יצירת גיליון Excel
-    const ws = XLSX.utils.json_to_sheet(translatedData, { skipHeader: false });
+    // Create worksheet
+    const ws = XLSX.utils.json_to_sheet(formattedData, {
+      header: ["שם מכונה", "סוג מכונה", 'סה"כ זמן השבתה', "עלות תיקון"]
+    });
 
-    // הגדרת כיוון RTL והגדרות עיצוב לגיליון
+    // Set RTL
     ws['!dir'] = 'rtl';
 
-    // הגדרת סגנונות לכותרות
+    // Set column widths
+    ws['!cols'] = [
+      { width: 25 },
+      { width: 25 },
+      { width: 30 },
+      { width: 20 }
+    ];
+
+    // Apply header styles
     const headerStyle = {
-      fill: { fgColor: { rgb: "4F81BD" } }, // צבע רקע כחול
-      font: { color: { rgb: "FFFFFF" }, bold: true }, // טקסט לבן ומודגש
-      alignment: { horizontal: "right" }, // יישור לימין
+      fill: {
+        patternType: 'solid',
+        fgColor: { rgb: "C5D9F1" }
+      },
+      font: {
+        bold: true,
+        color: { rgb: "000000" }
+      },
+      alignment: {
+        horizontal: 'right',
+        vertical: 'center',
+        wrapText: true
+      },
+      border: {
+        top: { style: 'thin' },
+        bottom: { style: 'thin' },
+        left: { style: 'thin' },
+        right: { style: 'thin' }
+      }
     };
 
-    // הגדרת רוחב עמודות
-    ws["!cols"] = Object.keys(translatedData[0]).map(() => ({ width: 25 }));
-
-    // החלת סגנונות על כותרות
+    // Apply styles to headers and repair cost column
     const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:D1');
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      const address = XLSX.utils.encode_col(C) + "1";
-      if (!ws[address]) continue;
-      ws[address].s = headerStyle;
+    
+    // Apply header styles
+    ['A1', 'B1', 'C1', 'D1'].forEach(cellRef => {
+      if (ws[cellRef]) ws[cellRef].s = headerStyle;
+    });
+
+    // Apply repair cost column styles
+    for (let row = 2; row <= range.e.r + 1; row++) {
+      const cellRef = `D${row}`;
+      if (ws[cellRef]) {
+        ws[cellRef].s = {
+          alignment: {
+            horizontal: 'center',
+            vertical: 'center'
+          },
+          border: {
+            top: { style: 'thin' },
+            bottom: { style: 'thin' },
+            left: { style: 'thin' },
+            right: { style: 'thin' }
+          }
+        };
+      }
     }
 
-    // יצירת חוברת עבודה
+    // Apply border styles to all cells
+    for (let row = 2; row <= range.e.r + 1; row++) {
+      ['A', 'B', 'C'].forEach(col => {
+        const cellRef = `${col}${row}`;
+        if (ws[cellRef]) {
+          ws[cellRef].s = {
+            alignment: {
+              horizontal: 'right',
+              vertical: 'center'
+            },
+            border: {
+              top: { style: 'thin' },
+              bottom: { style: 'thin' },
+              left: { style: 'thin' },
+              right: { style: 'thin' }
+            }
+          };
+        }
+      });
+    }
+
+    // Create workbook and set RTL
     const wb = XLSX.utils.book_new();
-    
-    // הגדרת כיוון RTL לחוברת העבודה
-    wb.Workbook = wb.Workbook || {};
-    wb.Workbook.Views = wb.Workbook.Views || [];
-    wb.Workbook.Views[0] = {
-      RTL: true,
+    wb.Workbook = {
+      Views: [{ RTL: true }]
     };
 
     XLSX.utils.book_append_sheet(wb, ws, "דוח השבתה");
