@@ -17,6 +17,10 @@ export default function Hamburger({ buttons }: HamburgerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
+
   return (
     <div className="relative">
       <button
@@ -34,6 +38,7 @@ export default function Hamburger({ buttons }: HamburgerProps) {
               <Link
                 key={index}
                 href={button.href}
+                onClick={handleLinkClick} // סוגר את התפריט בלחיצה
                 className={`block px-4 py-2 transition ${
                   isActive ? "bg-green-500 text-white" : "hover:bg-gray-100"
                 }`}

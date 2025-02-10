@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <style>
+    .spinner {
+      transform-origin: center;
+      animation: spin 2s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <circle 
+    class="spinner"
+    cx="50" 
+    cy="50" 
+    r="40" 
+    fill="none" 
+    stroke="#2563eb" 
+    stroke-width="8" 
+    stroke-dasharray="180 100" 
+  />
+  <path 
+    class="spinner"
+    d="M50 10 L60 30 L50 25 L40 30 Z" 
+    fill="#93c5fd"
+  />
+</svg>
