@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PasswordPopup from "./PasswordPopup";
 import CloseFaultForm from "./CloseFaultForm";
-import  { Fault } from "@/models/Machine";
+import { Fault } from "@/models/Machine";
 
 export default function CloseFault() {
   const [faults, setFaults] = useState<Fault[]>([]);
@@ -30,7 +30,9 @@ export default function CloseFault() {
   };
 
   const handleFaultClosed = (faultId: string) => {
-    setFaults(faults.filter(fault => fault._id !== faultId));
+    setFaults(faults.map(fault =>
+      fault._id === faultId ? { ...fault, status: "closed" } : fault
+    ));
     setAuthorized(false);
   };
 
@@ -60,12 +62,18 @@ export default function CloseFault() {
                 <td className="py-2 px-4 border-b">{fault.date}</td>
                 <td className="py-2 px-4 border-b">{fault.description}</td>
                 <td className="py-2 px-4 border-b">
-                  <button
-                    onClick={() => handleOpenPasswordPopup(fault)}
-                    className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
-                  >
-                    סגור תקלה
-                  </button>
+                  {fault.status === "closed" ? (
+                    <span className="py-4 px-6 bg-blue-200 text-blue-800 rounded-md">
+                      נסגר
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleOpenPasswordPopup(fault)}
+                      className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                    >
+                      סגור תקלה
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
