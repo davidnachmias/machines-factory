@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     // הגדרת פרטי המייל
     const mailOptions = {
       from: process.env.GMAIL_USER, // שליפה מהקובץ .env.local
-      to: process.env.GMAIL_USER, // שליחה למייל שלך
+      to: process.env.GMAIL_SUPPORT, // שליחה למייל שלך
       subject: "דוח השבתה",
       text: "מצורף דוח השבתה", // טקסט מלווה
       attachments: [
