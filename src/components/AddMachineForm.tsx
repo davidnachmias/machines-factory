@@ -25,8 +25,12 @@ export default function AddMachineForm() {
       } else {
         alert(`Failed to add machine: ${response.data.error}`);
       }
-    } catch (error: any) {
-      alert(`Failed to add machine: ${error.message}`);
+    } catch (error: unknown) {
+      let errorMessage = 'Unknown error occurred';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      alert(`Failed to add machine: ${errorMessage}`);
     }
   };
 

@@ -26,8 +26,14 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     await machine.save();
 
     return NextResponse.json({ message: 'Fault added successfully!' }, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to add fault:', error);
-    return NextResponse.json({ error: `Failed to add fault: ${error.message}` }, { status: 500 });
+
+    let errorMessage = 'Unknown error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return NextResponse.json({ error: `Failed to add fault: ${errorMessage}` }, { status: 500 });
   }
 }

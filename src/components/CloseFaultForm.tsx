@@ -25,8 +25,12 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
             } else {
                 alert(`שגיאה: ${response.data.error}`);
             }
-        } catch (error: any) {
-            alert(`שגיאה: ${error.message}`);
+        } catch (error: unknown) {
+            let errorMessage = 'Unknown error occurred';
+            if (error instanceof Error) {
+              errorMessage = error.message;
+            }
+            alert(`שגיאה:${errorMessage}`);
         }
     };
 

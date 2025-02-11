@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/dbConnect';
 import Machine from '@/models/Machine';
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
     await dbConnect();
 
@@ -22,8 +22,13 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     );
 
     return NextResponse.json(closedFaults, { status: 200 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Failed to fetch closed faults:', error);
-    return NextResponse.json({ error: `Failed to fetch closed faults: ${error.message}` }, { status: 500 });
+    let errorMessage = 'Unknown error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return NextResponse.json({ error: `Failed to add fault: ${errorMessage}` }, { status: 500 });
   }
 }

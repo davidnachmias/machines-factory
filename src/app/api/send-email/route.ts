@@ -43,11 +43,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       { message: "Email sent successfully!" },
       { status: 200 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending email:", error);
-    return NextResponse.json(
-      { error: "Failed to send email" },
-      { status: 500 }
-    );
+    let errorMessage = 'Unknown error occurred';
+    if (error instanceof Error) {
+      errorMessage = error.message;
     }
+
+    return NextResponse.json({ error: `Failed to add fault: ${errorMessage}` }, { status: 500 });
+  }
 }

@@ -51,7 +51,7 @@ export default function ExportToPDF({ data, sendToMail }: ExportToPDFProps) {
         fixHebrewText("שם מכונה"),
     ];
 
-    const tableRows: any[] = [];
+    const tableRows: string[][] = []; // Specify the type as an array of string arrays
     console.log(data, "data");
 
     data.forEach((fault) => {
@@ -103,7 +103,7 @@ export default function ExportToPDF({ data, sendToMail }: ExportToPDFProps) {
             .then((data) => {
                 alert(data.message || "Email sent successfully!");
             })
-            .catch((error) => {
+            .catch(() => {
                 alert("Error sending email");
             });
 

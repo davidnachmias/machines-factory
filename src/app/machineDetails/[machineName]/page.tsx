@@ -1,9 +1,8 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { IMachine, Fault } from "@/models/Machine";
 
 export default function DynamicMachineDetails() {
-    const router = useRouter();
     const searchParams = useSearchParams();
 
     const machineData: IMachine = JSON.parse(searchParams.get("machine") || "{}");
