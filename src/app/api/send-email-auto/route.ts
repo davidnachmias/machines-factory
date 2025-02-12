@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 import nodemailer from "nodemailer";
 
