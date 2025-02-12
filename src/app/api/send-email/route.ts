@@ -1,55 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import * as XLSX from "xlsx";
 
-export async function POST(req: NextRequest): Promise<NextResponse> {
+export async function GET() {
   try {
-    const formData = await req.formData();
-    const file = formData.get("file") as Blob;
+    // צור נתונים לדוח לדוגמה (כאן אתה צריך למשוך נתונים אמיתיים)
+    const data = [
+      { machineName: "מכונה 1", machineType: "סוג 1", downtimeDays: 2, downtimeHours: 5, downtimeMinutes: 30, repairCost: "200" }
+    ];
 
-    if (!file) {
-      return NextResponse.json({ error: "No file provided" }, { status: 400 });
-    }
+    // יצירת קובץ Excel
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "דוח השבתה");
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
 
-    // המרת הקובץ לפורמט Buffer
-    const fileBuffer = Buffer.from(await file.arrayBuffer());
-
-    // הגדרת טרנספורטר של Nodemailer
+    // הגדרת הטרנספורטר של Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.GMAIL_USER, // שליפה מהקובץ .env.local
-        pass: process.env.GMAIL_PASS, // שליפה מהקובץ .env.local
+        user: process.env.GMAIL_USER, // כתובת מייל שולח
+        pass: process.env.GMAIL_PASS, // סיסמה (או App Password)
       },
     });
 
-    // הגדרת פרטי המייל
-    const mailOptions = {
-      from: process.env.GMAIL_USER, // שליפה מהקובץ .env.local
-      to: process.env.GMAIL_SUPPORT, // שליחה למייל שלך
-      subject: "דוח השבתה",
-      text: "מצורף דוח השבתה", // טקסט מלווה
-      attachments: [
-        {
-          filename: (formData.get("file") as File).name,
-          content: fileBuffer,
-        },
-      ],
-    };
+    // שליחת המייל עם הקובץ כקובץ מצורף
+    await transporter.sendMail({
+      from: process.env.GMAIL_USER,
+      to: process.env.GMAIL_SUPPORT, // כתובת המקבל
+      subject: "דוח השבתה תקופתי",
+      text: "מצורף דוח ההשבתה לתקופה האחרונה",
+      attachments: [{ filename: "downtime_report.xlsx", content: excelBuffer }],
+    });
 
-    // שליחת המייל
-    await transporter.sendMail(mailOptions);
-
-    return NextResponse.json(
-      { message: "Email sent successfully!" },
-      { status: 200 }
-    );
-  } catch (error: unknown) {
-    console.error("Error sending email:", error);
-    let errorMessage = 'Unknown error occurred';
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-
-    return NextResponse.json({ error: `Failed to add fault: ${errorMessage}` }, { status: 500 });
-  }
+    return NextResponse.json({ message: "Email sent successfully!" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
+  } 
 }
