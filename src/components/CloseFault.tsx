@@ -37,13 +37,15 @@ export default function CloseFault() {
   };
 
   return (
-    <div className="flex flex-col items-center max-h-screen p-8 mt-10">
-      <h1 className="text-3xl font-semibold text-center text-gray-800 mb-8">
+    <div className="flex flex-col items-center max-h-screen p-4 sm:p-8 mt-6">
+      <h1 className="text-2xl sm:text-3xl font-semibold text-center text-gray-800 mb-6">
         סגירת תקלה
       </h1>
-      <div className="w-full max-w-6xl">
-        <table className="min-w-full bg-white">
-          <thead>
+
+      {/* טבלה במסכים גדולים */}
+      <div className="hidden sm:block w-full max-w-6xl overflow-x-auto">
+        <table className="min-w-full bg-white border border-gray-200 shadow-md">
+          <thead className="bg-gray-100">
             <tr>
               <th className="py-2 px-4 border-b">שם מכונה</th>
               <th className="py-2 px-4 border-b">סוג מכונה</th>
@@ -55,21 +57,21 @@ export default function CloseFault() {
           </thead>
           <tbody>
             {faults.map((fault) => (
-              <tr key={fault._id}>
+              <tr key={fault._id} className="hover:bg-gray-50">
                 <td className="py-2 px-4 border-b">{fault.machineName}</td>
                 <td className="py-2 px-4 border-b">{fault.machineType}</td>
                 <td className="py-2 px-4 border-b">{fault.formType}</td>
                 <td className="py-2 px-4 border-b">{fault.date}</td>
                 <td className="py-2 px-4 border-b">{fault.description}</td>
-                <td className="py-2 px-4 border-b">
+                <td className="py-2 px-4 border-b text-center">
                   {fault.status === "closed" ? (
-                    <span className="py-4 px-6 bg-blue-200 text-blue-800 rounded-md">
+                    <span className="py-1 px-3 bg-blue-200 text-blue-800 rounded-md text-sm">
                       נסגר
                     </span>
                   ) : (
                     <button
                       onClick={() => handleOpenPasswordPopup(fault)}
-                      className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition"
+                      className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
                     >
                       סגור תקלה
                     </button>
@@ -79,6 +81,36 @@ export default function CloseFault() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* תצוגת כרטיסים בטלפונים */}
+      <div className="sm:hidden w-full space-y-4">
+        {faults.map((fault) => (
+          <div
+            key={fault._id}
+            className="bg-white p-4 shadow-md rounded-md border border-gray-200"
+          >
+            <p className="text-lg font-semibold text-gray-700">{fault.machineName}</p>
+            <p className="text-sm text-gray-500">סוג מכונה: {fault.machineType}</p>
+            <p className="text-sm text-gray-500">סוג פעולה: {fault.formType}</p>
+            <p className="text-sm text-gray-500">תאריך פתיחה: {fault.date}</p>
+            <p className="text-sm text-gray-500">תיאור: {fault.description}</p>
+            <div className="mt-3">
+              {fault.status === "closed" ? (
+                <span className="py-1 px-3 bg-blue-200 text-blue-800 rounded-md text-sm">
+                  נסגר
+                </span>
+              ) : (
+                <button
+                  onClick={() => handleOpenPasswordPopup(fault)}
+                  className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
+                >
+                  סגור תקלה
+                </button>
+              )}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* פופאפ סיסמה */}
