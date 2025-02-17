@@ -1,12 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { IMachine } from '@/models/Machine';
+import { IMachine, Fault } from '@/models/Machine';
 
 interface FaultFormProps {
     machineName?: string;
     machineId?: string;
-    onAddFaultForm?: (newFault: any) => void;
+    onAddFaultForm?: (newFault: Fault) => void;
 }
 
 const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaultForm }) => {
