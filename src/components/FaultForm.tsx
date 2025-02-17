@@ -155,7 +155,15 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                     <button
                         type="submit"
                         className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                        disabled={!selectedMachine || !formType || !description}
+                        onClick={(e) => {
+                            if (!selectedMachine) {
+                                alert('בחר מכונה');
+                                e.preventDefault();
+                            } else if (!description) {
+                                alert('כתוב את תיאור התקלה');
+                                e.preventDefault();
+                            }
+                        }}
                     >
                         {submitLabel}
                     </button>
