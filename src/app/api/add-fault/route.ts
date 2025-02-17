@@ -7,9 +7,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     await dbConnect();
 
-    const { machineId, formType, description, date } = await req.json();
+    const { _id, formType, description, date } = await req.json();
 
-    const machine = await Machine.findById(machineId);
+    const machine = await Machine.findById(_id);
     if (!machine) {
       return NextResponse.json({ error: 'Machine not found' }, { status: 404 });
     }

@@ -7,12 +7,25 @@ import FaultForm from "@/components/FaultForm";
 export default function DynamicMachineDetails() {
     const searchParams = useSearchParams();
     const [showFaultForm, setShowFaultForm] = useState(false);
-
-    const machineData: IMachine = JSON.parse(searchParams.get("machine") || "{}");
+    const [machineData, setMachineData] = useState<IMachine>(JSON.parse(searchParams.get("machine") || "{}"));
 
     const handleAddFaultClick = () => {
         setShowFaultForm(!showFaultForm);
     };
+
+    const onAddFaultForm = (newFault:Fault) => {
+        console.log(newFault, 'newFault===============');
+        setMachineData((prevMachineData) => {
+            return {
+                ...prevMachineData,
+                faults: [
+                    ...prevMachineData.faults,
+                    newFault
+                ]
+            } as IMachine;
+        });
+        setShowFaultForm(false);    
+    }
 
     return (
         <div className="flex flex-col items-center min-h-screen p-8 bg-gray-100">
@@ -35,7 +48,7 @@ export default function DynamicMachineDetails() {
                                 >
                                     ✖
                                 </button>
-                                <FaultForm machineName={machineData.name} machineId={machineData._id as string}/>
+                                <FaultForm machineName={machineData.name} machineId={machineData._id as string} onAddFaultForm = {onAddFaultForm} />
                             </div>
                         </div>
                     )}

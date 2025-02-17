@@ -6,9 +6,10 @@ import { IMachine } from '@/models/Machine';
 interface FaultFormProps {
     machineName?: string;
     machineId?: string;
+    onAddFaultForm?: (newFault: any) => void;
 }
 
-const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
+const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaultForm }) => {
     const [machines, setMachines] = useState<IMachine[]>([]);
     const [selectedMachine, setSelectedMachine] = useState<string>('');
     const [formType, setFormType] = useState<string>('תקלה');
@@ -59,10 +60,11 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
         }
 
         const data = {
-            machineId: selectedMachine,
+            _id: selectedMachine,
             formType,
             description,
             date: new Date().toISOString(),
+            status: 'open',
         };
 
         try {
@@ -74,6 +76,10 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
 
             if (response.status === 200) {
                 alert('Fault added successfully!');
+                if (onAddFaultForm) {
+                    onAddFaultForm(data);
+                    console.log(data,'----------------');
+                }
             } else {
                 alert(`Failed to add fault: ${response.data.error}`);
             }
@@ -104,8 +110,8 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
                                     className="w-full px-4 py-2 border rounded-md mt-2"
                                 >
                                     <option value="">בחר מכונה</option>
-                                    {machines.map(machine => (
-                                        <option key={String(machine._id)} value={String(machine._id)}>{machine.name}</option>
+                                    {machines.map((machine, index) => (
+                                        <option key={`${machine._id}-${index}`} value={String(machine._id)}>{machine.name}</option>
                                     ))}
                                 </select>
                             </>
