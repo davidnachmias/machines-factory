@@ -4,8 +4,8 @@ import axios from 'axios';
 import { IMachine } from '@/models/Machine';
 
 interface FaultFormProps {
-    machineName: string;
-    machineId : string;
+    machineName?: string;
+    machineId?: string;
 }
 
 const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
