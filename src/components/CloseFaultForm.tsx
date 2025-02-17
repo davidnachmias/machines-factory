@@ -54,13 +54,13 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                     <p><strong>תאריך:</strong> {fault.date}</p>
                 </div>
 
-                {/* שדות קלט */}
                 <input
                     type="text"
                     placeholder="חלפים שהוחלפו"
                     className="border p-2 mb-2 w-full"
                     value={partsUsed}
                     onChange={(e) => setPartsUsed(e.target.value)}
+                    required
                 />
                 <input
                     type="string"
@@ -72,6 +72,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                         const value = e.target.value;
                         if (/^\d*\.?\d*$/.test(value)) setRepairCost(value);
                     }}
+                    required
                 />
 
                 {/* כפתורים */}
@@ -79,7 +80,16 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                     <button onClick={() => onClose("cancelled")} className="bg-gray-400 text-white px-4 py-2 rounded">
                         ביטול
                     </button>
-                    <button onClick={handleCloseFault} className="bg-green-600 text-white px-4 py-2 rounded">
+                    <button
+                        onClick={() => {
+                            if (!partsUsed.trim() || !repairCost.trim()) {
+                                alert('אנא מלא את כל השדות הנדרשים.');
+                                return;
+                            }
+                            handleCloseFault();
+                        }}
+                        className="bg-green-600 text-white px-4 py-2 rounded"
+                    >
                         אישור
                     </button>
                 </div>
