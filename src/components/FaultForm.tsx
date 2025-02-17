@@ -78,7 +78,6 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                 alert('Fault added successfully!');
                 if (onAddFaultForm) {
                     onAddFaultForm(data);
-                    console.log(data,'----------------');
                 }
                 // Clear the form
                 setSelectedMachine('');
@@ -159,7 +158,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                             if (!selectedMachine) {
                                 alert('בחר מכונה');
                                 e.preventDefault();
-                            } else if (!description) {
+                            } else if (!description.trim()) {
                                 alert('כתוב את תיאור התקלה');
                                 e.preventDefault();
                             }
