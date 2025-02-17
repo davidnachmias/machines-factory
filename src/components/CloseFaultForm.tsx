@@ -51,7 +51,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                     <p><strong>סוג מכונה:</strong> {fault.machineType}</p>
                     <p><strong>סוג פעולה:</strong> {fault.formType}</p>
                     <p><strong>תיאור:</strong> {fault.description}</p>
-                    <p><strong>תאריך:</strong> {new Date(fault.date).toLocaleDateString()}</p>
+                    <p><strong>תאריך:</strong> {fault.date}</p>
                 </div>
 
                 {/* שדות קלט */}
