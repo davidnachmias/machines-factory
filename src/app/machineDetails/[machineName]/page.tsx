@@ -1,11 +1,18 @@
 "use client";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { IMachine, Fault } from "@/models/Machine";
+import FaultForm from "@/components/FaultForm";
 
 export default function DynamicMachineDetails() {
     const searchParams = useSearchParams();
+    const [showFaultForm, setShowFaultForm] = useState(false);
 
     const machineData: IMachine = JSON.parse(searchParams.get("machine") || "{}");
+
+    const handleAddFaultClick = () => {
+        setShowFaultForm(!showFaultForm);
+    };
 
     return (
         <div className="flex flex-col items-center min-h-screen p-8 bg-gray-100">
@@ -13,6 +20,25 @@ export default function DynamicMachineDetails() {
             {machineData.name ? (
                 <>
                     <h2 className="text-2xl font-semibold mb-4 text-gray-700">שם מכונה: {decodeURI(machineData.name)}</h2>
+                    <button 
+                        className="mb-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        onClick={handleAddFaultClick}
+                    >
+                        הוסף תקלה
+                    </button>
+                    {showFaultForm && (
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                            <div className="bg-white p-8 rounded shadow-lg w-full max-w-md relative">
+                                <button 
+                                    className="absolute top-4 right-4 text-black hover:text-gray-700"
+                                    onClick={handleAddFaultClick}
+                                >
+                                    ✖
+                                </button>
+                                <FaultForm machineName={machineData.name} machineId={machineData._id as string}/>
+                            </div>
+                        </div>
+                    )}
                     {machineData.faults.length > 0 ? (
                         <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
                             <h3 className="text-xl font-semibold mb-4 text-gray-600">תקלות:</h3>

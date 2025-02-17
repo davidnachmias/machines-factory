@@ -29,11 +29,12 @@ export default function CloseFault() {
     setPasswordPopupOpen(true);
   };
 
-  const handleFaultClosed = (faultId: string) => {
-    setFaults(faults.map(fault =>
-      fault._id === faultId ? { ...fault, status: "closed" } : fault
-    ));
+  const handleFaultClosed = (faultId: string, status:string) => {
     setAuthorized(false);
+    if (status === "cancelled") return
+    setFaults(faults.map(fault =>
+      fault._id === faultId ? { ...fault, status: 'closed' } : fault
+    ));
   };
 
   return (
@@ -126,7 +127,7 @@ export default function CloseFault() {
 
       {/* טופס סגירת תקלה לאחר אימות סיסמה */}
       {isAuthorized && selectedFault && (
-        <CloseFaultForm fault={selectedFault} onClose={() => handleFaultClosed(selectedFault._id)} />
+        <CloseFaultForm fault={selectedFault} onClose={(status:string) => handleFaultClosed(selectedFault._id,status)} />
       )}
     </div>
   );

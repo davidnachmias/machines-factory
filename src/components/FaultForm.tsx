@@ -3,7 +3,12 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { IMachine } from '@/models/Machine';
 
-const FaultForm: React.FC = () => {
+interface FaultFormProps {
+    machineName: string;
+    machineId : string;
+}
+
+const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId }) => {
     const [machines, setMachines] = useState<IMachine[]>([]);
     const [selectedMachine, setSelectedMachine] = useState<string>('');
     const [formType, setFormType] = useState<string>('תקלה');
@@ -21,6 +26,9 @@ const FaultForm: React.FC = () => {
         };
 
         fetchMachines();
+        if (machineId) {
+            setSelectedMachine(machineId); 
+        }
     }, []);
 
     const handleMachineChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -79,61 +87,69 @@ const FaultForm: React.FC = () => {
     };
 
     return (
-        <div className='p-8 mt-10'>
-            <h1 className="text-xl font-bold mb-10">הוספת תקלה/טיפול תקופתי</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full max-w-md">
-            <div>
-                <label htmlFor="machine" className="block text-sm font-medium text-gray-700">בחר מכונה</label>
-                <select
-                    id="machine"
-                    value={selectedMachine}
-                    onChange={handleMachineChange}
-                    className="w-full px-4 py-2 border rounded-md mt-2"
-                >
-                    <option value="">בחר מכונה</option>
-                    {machines.map(machine => (
-                        <option key={String(machine._id)} value={String(machine._id)}>{machine.name}</option>
-                    ))}
-                </select>
+        <div className='p-8 mt-10 flex justify-center'>
+            <div className='w-full max-w-md'>
+                <h1 className="text-xl font-bold mb-10">הוספת תקלה/טיפול תקופתי</h1>
+                <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                    <div>
+                        {machineName ? (
+                            <h2 className="text-lg font-medium text-gray-700">{machineName}</h2>
+                        ) : (
+                            <>
+                                <label htmlFor="machine" className="block text-sm font-medium text-gray-700">בחר מכונה</label>
+                                <select
+                                    id="machine"
+                                    value={selectedMachine}
+                                    onChange={handleMachineChange}
+                                    className="w-full px-4 py-2 border rounded-md mt-2"
+                                >
+                                    <option value="">בחר מכונה</option>
+                                    {machines.map(machine => (
+                                        <option key={String(machine._id)} value={String(machine._id)}>{machine.name}</option>
+                                    ))}
+                                </select>
+                            </>
+                        )}
+                    </div>
+
+                    <div>
+                        <label htmlFor="formType" className="block text-sm font-medium text-gray-700">בחר סוג פעולה</label>
+                        <select
+                            id="formType"
+                            value={formType}
+                            onChange={handleFormTypeChange}
+                            className="w-full px-4 py-2 border rounded-md mt-2"
+                        >
+                            <option value="תקלה">פתיחת תקלה</option>
+                            <option value="טיפול תקופתי">טיפול תקופתי</option>
+                        </select>
+                    </div>
+
+                    {formType && (
+                        <div>
+                            <label htmlFor="description" className="block text-sm font-medium text-gray-700">
+                                תיאור {formType === 'תקלה' ? 'התקלה' : 'הטיפול'}
+                            </label>
+                            <textarea
+                                id="description"
+                                value={description}
+                                onChange={handleDescriptionChange}
+                                placeholder={`הכנס ${formType === 'תקלה' ? 'התקלה' : 'הטיפול'}`}
+                                rows={3}
+                                className="w-full px-4 py-2 border rounded-md mt-2"
+                            />
+                        </div>
+                    )}
+
+                    <button
+                        type="submit"
+                        className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
+                        disabled={!selectedMachine || !formType || !description}
+                    >
+                        {submitLabel}
+                    </button>
+                </form>
             </div>
-
-            <div>
-                <label htmlFor="formType" className="block text-sm font-medium text-gray-700">בחר סוג פעולה</label>
-                <select
-                    id="formType"
-                    value={formType}
-                    onChange={handleFormTypeChange}
-                    className="w-full px-4 py-2 border rounded-md mt-2"
-                >
-                    <option value="תקלה">פתיחת תקלה</option>
-                    <option value="טיפול תקופתי">טיפול תקופתי</option>
-                </select>
-            </div>
-
-            {formType && (
-                <div>
-                    <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                        תיאור {formType === 'תקלה' ? 'התקלה' : 'הטיפול'}
-                    </label>
-                    <textarea
-                        id="description"
-                        value={description}
-                        onChange={handleDescriptionChange}
-                        placeholder={`הכנס ${formType === 'תקלה' ? 'התקלה' : 'הטיפול'}`}
-                        rows={3}
-                        className="w-full px-4 py-2 border rounded-md mt-2"
-                    />
-                </div>
-            )}
-
-            <button
-                type="submit"
-                className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                disabled={!selectedMachine || !formType || !description}
-            >
-                {submitLabel}
-            </button>
-        </form>
         </div>
     );
 };

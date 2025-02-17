@@ -4,7 +4,7 @@ import { Fault } from "@/models/Machine";
 
 interface CloseFaultFormProps {
     fault: Fault;
-    onClose: () => void;
+    onClose: (status: string) => void;
 }
 
 export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) {
@@ -18,10 +18,9 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
                 partsUsed,
                 repairCost,
             });
-            console.log(partsUsed, repairCost, 'sdlfl;djgl;jg');
             if (response.status === 200) {
                 alert('התקלה נסגרה בהצלחה!');
-                onClose();
+                onClose("closed");
             } else {
                 alert(`שגיאה: ${response.data.error}`);
             }
@@ -39,7 +38,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
             <div className="relative bg-white p-6 rounded-lg shadow-lg w-96">
                 {/* כפתור סגירה */}
                 <button
-                    onClick={onClose}
+                    onClick={() => onClose("cancelled")}
                     className="absolute top-3 right-3 text-gray-600 hover:text-red-600 text-xl"
                 >
                     ❌
@@ -77,7 +76,7 @@ export default function CloseFaultForm({ fault, onClose }: CloseFaultFormProps) 
 
                 {/* כפתורים */}
                 <div className="flex justify-between">
-                    <button onClick={onClose} className="bg-gray-400 text-white px-4 py-2 rounded">
+                    <button onClick={() => onClose("cancelled")} className="bg-gray-400 text-white px-4 py-2 rounded">
                         ביטול
                     </button>
                     <button onClick={handleCloseFault} className="bg-green-600 text-white px-4 py-2 rounded">
