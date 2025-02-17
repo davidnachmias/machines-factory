@@ -80,6 +80,11 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                     onAddFaultForm(data);
                     console.log(data,'----------------');
                 }
+                // Clear the form
+                setSelectedMachine('');
+                setFormType('תקלה');
+                setDescription('');
+                setSubmitLabel('הוסף תקלה');
             } else {
                 alert(`Failed to add fault: ${response.data.error}`);
             }

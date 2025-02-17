@@ -22,6 +22,7 @@ export default function AddMachineForm() {
 
       if (response.status === 200) {
         alert('Machine added successfully!');
+        form.reset(); // Reset the form here
       } else {
         alert(`Failed to add machine: ${response.data.error}`);
       }
