@@ -5,11 +5,27 @@ interface PasswordPopupProps {
   onAuthorized: () => void;
 }
 
-export default function PasswordPopup({ onClose, onAuthorized }: PasswordPopupProps) {
+export default function PasswordPopup({
+  onClose,
+  onAuthorized,
+}: PasswordPopupProps) {
   const [password, setPassword] = useState("");
 
+  const passwords = [
+    "2134",
+    "5678",
+    "9101",
+    "2345",
+    "6789",
+    "3456",
+    "7890",
+    "4567",
+    "8901",
+    "0123",
+  ];
+
   const handlePasswordSubmit = () => {
-    if (password === "1234") {
+    if (passwords.includes(password)) {
       onAuthorized(); // עדכון `isAuthorized` ב-`CloseFault.tsx`
     } else {
       alert("סיסמה שגויה");
@@ -33,7 +49,10 @@ export default function PasswordPopup({ onClose, onAuthorized }: PasswordPopupPr
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button onClick={handlePasswordSubmit} className="bg-blue-600 text-white px-4 py-2 rounded">
+        <button
+          onClick={handlePasswordSubmit}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
+        >
           אישור
         </button>
       </div>
