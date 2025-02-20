@@ -5,10 +5,7 @@ interface PasswordPopupProps {
   onAuthorized: () => void;
 }
 
-export default function PasswordPopup({
-  onClose,
-  onAuthorized,
-}: PasswordPopupProps) {
+export default function PasswordPopup({onClose, onAuthorized}: PasswordPopupProps) {
   const [password, setPassword] = useState("");
 
   const passwords = [
