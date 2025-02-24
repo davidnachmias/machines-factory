@@ -29,7 +29,7 @@ export default function CloseFault() {
     setPasswordPopupOpen(true);
   };
 
-  const handleFaultClosed = (faultId: string, status:string) => {
+  const handleFaultClosed = (faultId: string, status: string) => {
     setAuthorized(false);
     if (status === "cancelled") return
     setFaults(faults.map(fault =>
@@ -46,25 +46,27 @@ export default function CloseFault() {
       {/* טבלה במסכים גדולים */}
       <div className="hidden sm:block w-full max-w-6xl overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 shadow-md">
-          <thead className="bg-gray-100">
+          <thead className="bg-gray-100 border-b border-gray-300">
             <tr>
-              <th className="py-2 px-4 border-b">שם מכונה</th>
-              <th className="py-2 px-4 border-b">סוג מכונה</th>
-              <th className="py-2 px-4 border-b">סוג פעולה</th>
-              <th className="py-2 px-4 border-b">תאריך פתיחה</th>
-              <th className="py-2 px-4 border-b">תיאור התקלה</th>
-              <th className="py-2 px-4 border-b">פעולה</th>
+              <th className="py-2 px-4 border border-gray-300">שם מכונה</th>
+              <th className="py-2 px-4 border border-gray-300">סוג מכונה</th>
+              <th className="py-2 px-4 border border-gray-300">סוג פעולה</th>
+              <th className="py-2 px-4 border border-gray-300">תאריך פתיחה</th>
+              <th className="py-2 px-4 border border-gray-300">תיאור התקלה</th>
+              <th className="py-2 px-4 border border-gray-300">פעולה</th>
             </tr>
           </thead>
           <tbody>
             {faults.map((fault) => (
-              <tr key={fault._id} className="hover:bg-gray-50">
-                <td className={fault.status === "closed" ? "text-green-600 py-2 px-4 border-b font-bold" :"text-red-600 py-2 px-4 border-b font-bold" }>{fault.machineName}</td>
-                <td className="py-2 px-4 border-b">{fault.machineType}</td>
-                <td className="py-2 px-4 border-b">{fault.formType}</td>
-                <td className="py-2 px-4 border-b">{fault.date}</td>
-                <td className="py-2 px-4 border-b">{fault.description}</td>
-                <td className="py-2 px-4 border-b text-center">
+              <tr key={fault._id} className="hover:bg-gray-50 border-b border-gray-300">
+                <td className={`py-2 px-4 border border-gray-300 font-bold ${fault.status === "closed" ? "text-green-600" : "text-red-600"}`}>
+                  {fault.machineName}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">{fault.machineType}</td>
+                <td className="py-2 px-4 border border-gray-300">{fault.formType}</td>
+                <td className="py-2 px-4 border border-gray-300">{fault.date}</td>
+                <td className="py-2 px-4 border border-gray-300">{fault.description}</td>
+                <td className="py-2 px-4 border border-gray-300 text-center">
                   {fault.status === "closed" ? (
                     <span className="py-2 px-8 bg-green-500 text-white rounded-md text-sm">
                       נסגר
@@ -127,7 +129,7 @@ export default function CloseFault() {
 
       {/* טופס סגירת תקלה לאחר אימות סיסמה */}
       {isAuthorized && selectedFault && (
-        <CloseFaultForm fault={selectedFault} onClose={(status:string) => handleFaultClosed(selectedFault._id,status)} />
+        <CloseFaultForm fault={selectedFault} onClose={(status: string) => handleFaultClosed(selectedFault._id, status)} />
       )}
     </div>
   );

@@ -36,42 +36,46 @@ export default function AddMachineForm() {
   };
 
   return (
-    <div className="p-8 mt-10 flex flex-col items-center">
-      <h1 className="text-xl font-bold mb-8">הוספת מכונה</h1>
-    <form onSubmit={handleSubmit} className="flex flex-col items-center gap-6 w-full max-w-md">
-      <div className="w-full">
-        <label htmlFor="machineName" className="block text-right mb-2">
-          שם מכונה:
-        </label>
-        <input
-          type="text"
-          id="machineName"
-          name="machineName"
-          className="w-full p-2 border rounded-md text-right"
-          placeholder="הכנס שם מכונה"
-          required
-        />
+    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+      <div className="bg-white p-8 shadow-lg rounded-lg border border-gray-300 w-full max-w-md">
+        <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
+          הוספת מכונה
+        </h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <div>
+            <label htmlFor="machineName" className="block text-right mb-2 text-gray-700">
+              שם מכונה:
+            </label>
+            <input
+              type="text"
+              id="machineName"
+              name="machineName"
+              className="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="הכנס שם מכונה"
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="machineType" className="block text-right mb-2 text-gray-700">
+              סוג מכונה:
+            </label>
+            <input
+              type="text"
+              id="machineType"
+              name="machineType"
+              className="w-full p-3 border border-gray-300 rounded-md text-right focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="הכנס סוג מכונה"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition font-semibold shadow-md"
+          >
+            הוסף מכונה
+          </button>
+        </form>
       </div>
-      <div className="w-full">
-        <label htmlFor="machineType" className="block text-right mb-2">
-          סוג מכונה:
-        </label>
-        <input
-          type="text"
-          id="machineType"
-          name="machineType"
-          className="w-full p-2 border rounded-md text-right"
-          placeholder="הכנס סוג מכונה"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-      >
-        הוסף מכונה
-      </button>
-    </form>
     </div>
   );
 }

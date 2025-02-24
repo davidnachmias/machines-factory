@@ -28,7 +28,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
 
         fetchMachines();
         if (machineId) {
-            setSelectedMachine(machineId); 
+            setSelectedMachine(machineId);
         }
     }, []);
 
@@ -55,7 +55,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
         e.preventDefault();
         const selectedMachineData = machines.find(machine => machine._id === selectedMachine);
         if (!selectedMachineData) {
-            alert('Please select a machine');
+            alert('אנא בחר מכונה');
             return;
         }
 
@@ -75,35 +75,34 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
             });
 
             if (response.status === 200) {
-                alert('Fault added successfully!');
+                alert('הפעולה נוספה בהצלחה!');
                 if (onAddFaultForm) {
                     onAddFaultForm(data);
                 }
-                // Clear the form
                 setSelectedMachine('');
                 setFormType('תקלה');
                 setDescription('');
                 setSubmitLabel('הוסף תקלה');
             } else {
-                alert(`Failed to add fault: ${response.data.error}`);
+                alert(`שגיאה בהוספת הפעולה: ${response.data.error}`);
             }
         } catch (error: unknown) {
-            let errorMessage = 'Unknown error occurred';
+            let errorMessage = 'שגיאה לא ידועה';
             if (error instanceof Error) {
               errorMessage = error.message;
             }
-            alert(`Failed to add fault: ${errorMessage}`);
+            alert(`שגיאה בהוספת הפעולה: ${errorMessage}`);
         }
     };
 
     return (
-        <div className='p-8 mt-10 flex justify-center'>
-            <div className='w-full max-w-md'>
-                <h1 className="text-xl font-bold mb-10">הוספת תקלה/טיפול תקופתי</h1>
+        <div className='flex justify-center items-center min-h-screen'>
+            <div className='w-full max-w-md p-8 bg-white shadow-lg rounded-lg'>
+                <h1 className="text-xl font-bold mb-10 text-center">הוספת תקלה/טיפול תקופתי</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div>
                         {machineName ? (
-                            <h2 className="text-lg font-medium text-gray-700">{machineName}</h2>
+                            <h2 className="text-lg font-medium text-gray-700 text-center">{machineName}</h2>
                         ) : (
                             <>
                                 <label htmlFor="machine" className="block text-sm font-medium text-gray-700">בחר מכונה</label>
@@ -121,7 +120,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                             </>
                         )}
                     </div>
-
+    
                     <div>
                         <label htmlFor="formType" className="block text-sm font-medium text-gray-700">בחר סוג פעולה</label>
                         <select
@@ -134,7 +133,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                             <option value="טיפול תקופתי">טיפול תקופתי</option>
                         </select>
                     </div>
-
+    
                     {formType && (
                         <div>
                             <label htmlFor="description" className="block text-sm font-medium text-gray-700">
@@ -150,19 +149,10 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
                             />
                         </div>
                     )}
-
+    
                     <button
                         type="submit"
                         className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition"
-                        onClick={(e) => {
-                            if (!selectedMachine) {
-                                alert('בחר מכונה');
-                                e.preventDefault();
-                            } else if (!description.trim()) {
-                                alert('כתוב את תיאור התקלה');
-                                e.preventDefault();
-                            }
-                        }}
                     >
                         {submitLabel}
                     </button>
@@ -170,6 +160,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
             </div>
         </div>
     );
+    
 };
 
 export default FaultForm;
