@@ -27,20 +27,31 @@ export default function DowntimeReport() {
         ...filteredFaults.map((fault) => ({
             machineName: fault.machineName,
             machineType: fault.machineType,
+            closedDate: 'ב ' + new Date(fault.closedDate).toLocaleDateString('he-IL') + ' בשעה ' + new Date(fault.closedDate).toLocaleTimeString('he-IL', { hour12: false, minute: '2-digit', hour: '2-digit' }),
+            date: 'ב ' + new Date(fault.date).toLocaleDateString('he-IL') + ' בשעה ' + new Date(fault.date).toLocaleTimeString('he-IL', { hour12: false, minute: '2-digit', hour: '2-digit' }),
             downtimeDays: fault.downtimeDays,
             downtimeHours: fault.downtimeHours,
             downtimeMinutes: fault.downtimeMinutes,
-            repairCost: fault.repairCost ? `${fault.repairCost.toFixed(2)}` : "לא זמין"
+            repairCost: fault.repairCost ? `${fault.repairCost.toFixed(2)}` : "0"
         })),
         {
+            machineName: "",
+            machineType: "",
+            closedDate: "",
+            date: "",
+            downtimeDays: 0,
+            downtimeHours: 0,
+            downtimeMinutes: 0,
+            repairCost: "",
             empty: 1,
         },
         {
-            machineType: 'סך הכל',
+            closedDate: 'סך הכל',
             downtimeDays: totalDowntime.days,
             downtimeHours: totalDowntime.hours,
             downtimeMinutes: totalDowntime.minutes,
-            repairCost: `${totalRepairCost.toFixed(2)}`
+            repairCost: `${totalRepairCost.toFixed(2)}`,
+            date: ""
         }
     ];
     
@@ -122,6 +133,8 @@ export default function DowntimeReport() {
                     <tr className="bg-gray-200">
                         <th className="border p-2">שם מכונה</th>
                         <th className="border p-2">סוג מכונה</th>
+                        <th className="border p-2">תאריך פתיחה</th>
+                        <th className="border p-2">תאריך סגירה</th>
                         <th className="border p-2">זמן השבתה</th>
                         <th className="border p-2">עלות תיקון</th>
                     </tr>
@@ -131,6 +144,8 @@ export default function DowntimeReport() {
                         <tr key={index} className="border">
                             <td className="border p-2">{fault.machineName}</td>
                             <td className="border p-2">{fault.machineType}</td>
+                            <td className="border p-2">{new Date(fault.date).toLocaleDateString('he-IL')} בשעה {new Date(fault.date).toLocaleTimeString('he-IL', { hour12: false, minute: '2-digit', hour: '2-digit' })}</td>
+                            <td className="border p-2">{new Date(fault.closedDate).toLocaleDateString('he-IL')} בשעה {new Date(fault.closedDate).toLocaleTimeString('he-IL', { hour12: false, minute: '2-digit', hour: '2-digit' })}</td>
                             <td className="border p-2">
                                 {fault.downtimeDays ?? 0} ימים, {fault.downtimeHours ?? 0} שעות, {fault.downtimeMinutes ?? 0} דקות
                             </td>
@@ -139,7 +154,7 @@ export default function DowntimeReport() {
                     ))}
                     {filteredFaults.length > 0 && (
                         <tr className="bg-gray-300 font-bold">
-                            <td className="border p-2 text-center" colSpan={2}>סך הכל</td>
+                            <td className="border p-2 text-center" colSpan={4}>סך הכל</td>
                             <td className="border p-2">
                                 {totalDowntime.days ?? 0} ימים, {totalDowntime.hours ?? 0} שעות, {totalDowntime.minutes ?? 0} דקות
                             </td>

@@ -59,20 +59,20 @@ export default function CloseFault() {
           <tbody>
             {faults.map((fault) => (
               <tr key={fault._id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{fault.machineName}</td>
+                <td className={fault.status === "closed" ? "text-green-600 py-2 px-4 border-b font-bold" :"text-red-600 py-2 px-4 border-b font-bold" }>{fault.machineName}</td>
                 <td className="py-2 px-4 border-b">{fault.machineType}</td>
                 <td className="py-2 px-4 border-b">{fault.formType}</td>
                 <td className="py-2 px-4 border-b">{fault.date}</td>
                 <td className="py-2 px-4 border-b">{fault.description}</td>
                 <td className="py-2 px-4 border-b text-center">
                   {fault.status === "closed" ? (
-                    <span className="py-1 px-3 bg-blue-200 text-blue-800 rounded-md text-sm">
+                    <span className="py-2 px-8 bg-green-500 text-white rounded-md text-sm">
                       נסגר
                     </span>
                   ) : (
                     <button
                       onClick={() => handleOpenPasswordPopup(fault)}
-                      className="py-1 px-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
+                      className="py-1 px-3 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm"
                     >
                       סגור תקלה
                     </button>
@@ -91,20 +91,20 @@ export default function CloseFault() {
             key={fault._id}
             className="bg-white p-4 shadow-md rounded-md border border-gray-200"
           >
-            <p className="text-lg font-semibold text-gray-700">{fault.machineName}</p>
+            <p className={fault.status === "closed" ? "text-green-600 text-lg font-semibold" : "text-red-600 text-lg font-semibold"}>{fault.machineName}</p>
             <p className="text-sm text-gray-500">סוג מכונה: {fault.machineType}</p>
             <p className="text-sm text-gray-500">סוג פעולה: {fault.formType}</p>
             <p className="text-sm text-gray-500">תאריך פתיחה: {fault.date}</p>
             <p className="text-sm text-gray-500">תיאור: {fault.description}</p>
             <div className="mt-3">
               {fault.status === "closed" ? (
-                <span className="py-1 px-3 bg-blue-200 text-blue-800 rounded-md text-sm">
+                <span className="py-1 px-3 bg-green-600 text-white rounded-md text-sm">
                   נסגר
                 </span>
               ) : (
                 <button
                   onClick={() => handleOpenPasswordPopup(fault)}
-                  className="w-full py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition text-sm"
+                  className="w-full py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition text-sm"
                 >
                   סגור תקלה
                 </button>
