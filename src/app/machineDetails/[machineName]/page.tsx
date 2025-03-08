@@ -41,14 +41,14 @@ export default function DynamicMachineDetails() {
                     </button>
                     {showFaultForm && (
                         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                            <div className="bg-white p-8 rounded shadow-lg w-full max-w-md relative">
+                            <div className="bg-white p-10 rounded shadow-lg w-full max-w-md relative">
                                 <button 
                                     className="absolute top-4 right-4 text-black hover:text-gray-700"
                                     onClick={handleAddFaultClick}
                                 >
                                     ✖
                                 </button>
-                                <FaultForm machineName={machineData.name} machineId={machineData._id as string} onAddFaultForm = {onAddFaultForm} />
+                                <FaultForm machineName={machineData.name} machineId={machineData._id as string} onAddFaultForm = {onAddFaultForm} showPopup = {true}/>
                             </div>
                         </div>
                     )}
