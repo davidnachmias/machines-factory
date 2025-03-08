@@ -1,13 +1,13 @@
-import { NextResponse } from 'next/server';
-import dbConnect from '@/lib/dbConnect';
-import Machine from '@/models/Machine';
+import { NextResponse } from "next/server";
+import dbConnect from "@/lib/dbConnect";
+import Machine from "@/models/Machine";
 
 export async function GET(): Promise<NextResponse> {
   try {
     await dbConnect();
 
     const machines = await Machine.find({});
-    
+
     // שליפת התקלות הסגורות בלבד
     const closedFaults = machines.flatMap((machine) =>
       machine.faults
@@ -18,17 +18,21 @@ export async function GET(): Promise<NextResponse> {
           closedDate: fault.closedDate,
           date: fault.date,
           repairCost: fault.repairCost,
+          repairDescription: fault.repairDescription || "לא צויין תיאור", // הוספת התיאור
         }))
     );
 
     return NextResponse.json(closedFaults, { status: 200 });
   } catch (error: unknown) {
-    console.error('Failed to fetch closed faults:', error);
-    let errorMessage = 'Unknown error occurred';
+    console.error("Failed to fetch closed faults:", error);
+    let errorMessage = "Unknown error occurred";
     if (error instanceof Error) {
       errorMessage = error.message;
     }
 
-    return NextResponse.json({ error: `Failed to add fault: ${errorMessage}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to fetch closed faults: ${errorMessage}` },
+      { status: 500 }
+    );
   }
 }

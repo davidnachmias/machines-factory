@@ -1,38 +1,46 @@
-// middleware.ts
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // הנתיבים שלא דורשים אימות (whitelist)
-  const publicPaths = ['/login', '/api', '/_next', '/images', '/favicon.ico'];
-  
-  // בדוק אם הנתיב הנוכחי הוא ציבורי (לא דורש אימות)
-  const isPublicPath = publicPaths.some(path => 
-    req.nextUrl.pathname === path || req.nextUrl.pathname.startsWith(path + '/')
+  const publicPaths = ["/login", "/api", "/_next", "/images", "/favicon.ico"];
+  const isPublicPath = publicPaths.some(
+    (path) =>
+      req.nextUrl.pathname === path ||
+      req.nextUrl.pathname.startsWith(path + "/")
   );
-  
-  // אם זה נתיב ציבורי, אפשר גישה ללא אימות
+
   if (isPublicPath) {
     return NextResponse.next();
   }
-  
-  // בדוק אם יש קוקי אימות תקף
-  const authCookie = req.cookies.get('auth');
-  
-  // אם אין קוקי תקף, הפנה ללוגין
-  if (!authCookie || authCookie.value !== process.env.NEXT_PUBLIC_SITE_PASSWORD) {
-    // שמור את הנתיב הנוכחי כדי לחזור אליו אחרי הלוגין
-    const url = new URL('/login', req.url);
-    url.searchParams.set('returnUrl', req.nextUrl.pathname);
-    
+
+  const authCookie = req.cookies.get("auth");
+
+  if (
+    !authCookie ||
+    authCookie.value !== process.env.NEXT_PUBLIC_SITE_PASSWORD
+  ) {
+    const url = new URL("/login", req.url);
+    url.searchParams.set("returnUrl", req.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
-  
-  // אם יש קוקי תקף, המשך לדף המבוקש
+
+  // בדיקת סיסמת אדמין עבור עמוד הדוח
+  if (req.nextUrl.pathname === "/report") {
+    const adminCookie = req.cookies.get("admin-auth");
+
+    if (
+      !adminCookie ||
+      adminCookie.value !== process.env.NEXT_PUBLIC_ADMIN_PASSWORD
+    ) {
+      const url = new URL("/admin-login", req.url);
+      url.searchParams.set("returnUrl", req.nextUrl.pathname);
+      return NextResponse.redirect(url);
+    }
+  }
+
   return NextResponse.next();
 }
 
-// עדכון ה-matcher כך שיפעל על כל הנתיבים
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
