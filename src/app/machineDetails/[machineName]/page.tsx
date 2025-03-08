@@ -40,18 +40,18 @@ export default function DynamicMachineDetails() {
                         הוסף תקלה
                     </button>
                     {showFaultForm && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 min-h-screen">
-                            <div className="bg-white p-10 rounded shadow-lg w-full max-w-md relative">
-                                <button 
-                                    className="absolute top-4 right-4 text-black hover:text-gray-700"
-                                    onClick={handleAddFaultClick}
-                                >
-                                    ✖
-                                </button>
-                                <FaultForm machineName={machineData.name} machineId={machineData._id as string} onAddFaultForm = {onAddFaultForm} showPopup = {true}/>
-                            </div>
-                        </div>
-                    )}
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 min-h-screen overflow-y-auto">
+        <div className="bg-white p-6 sm:p-10 rounded shadow-lg w-11/12 max-w-md mx-auto relative">
+            <button 
+                className="absolute top-4 right-4 text-black hover:text-gray-700"
+                onClick={handleAddFaultClick}
+            >
+                ✖
+            </button>
+            <FaultForm machineName={machineData.name} machineId={machineData._id as string} onAddFaultForm={onAddFaultForm} showPopup={true}/>
+        </div>
+    </div>
+)}
                     {machineData.faults.length > 0 ? (
                         <div className="w-full max-w-4xl bg-white shadow-lg rounded-lg p-6">
                             <h3 className="text-xl font-semibold mb-4 text-gray-600">תקלות:</h3>
