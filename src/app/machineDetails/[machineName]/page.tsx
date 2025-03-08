@@ -40,7 +40,7 @@ export default function DynamicMachineDetails() {
                         הוסף תקלה
                     </button>
                     {showFaultForm && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 min-h-screen">
                             <div className="bg-white p-10 rounded shadow-lg w-full max-w-md relative">
                                 <button 
                                     className="absolute top-4 right-4 text-black hover:text-gray-700"
