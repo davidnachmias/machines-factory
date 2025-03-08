@@ -97,7 +97,7 @@ const FaultForm: React.FC<FaultFormProps> = ({ machineName, machineId, onAddFaul
     };
 
     return (
-        <div className={showPopup ? 'flex' : 'flex justify-center items-center min-h-screen'}>
+        <div className={showPopup ? 'flex justify-center items-center' : 'flex justify-center items-center min-h-screen'}>
             <div className='w-full max-w-md p-8 bg-white shadow-lg rounded-lg'>
                 <h1 className="text-xl font-bold mb-10 text-center">הוספת תקלה/טיפול תקופתי</h1>
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
