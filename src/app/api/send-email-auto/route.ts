@@ -3,29 +3,21 @@ import nodemailer from "nodemailer";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    console.log("התקבלה בקשת POST לשליחת דוח...");
-
+    // קבלת הקובץ מבקשת ה-POST
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
 
     if (!file) {
-      console.warn("לא התקבל קובץ");
       return NextResponse.json(
         { error: "לא התקבל קובץ. יש לצרף קובץ Excel." },
         { status: 400 }
       );
     }
 
-    if (!file.type.includes("excel") && !file.name.endsWith(".xlsx")) {
-      console.warn("סוג הקובץ אינו תקין");
-      return NextResponse.json(
-        { error: "יש לצרף קובץ מסוג Excel בלבד." },
-        { status: 400 }
-      );
-    }
-
+    // המרת הקובץ לבאפר
     const fileBuffer = Buffer.from(await file.arrayBuffer());
 
+    // בדיקת הגדרות הדוא"ל
     if (
       !process.env.GMAIL_USER ||
       !process.env.GMAIL_PASS ||
@@ -38,6 +30,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
+    // יצירת טרנספורטר של Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -46,8 +39,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       },
     });
 
-    console.log("שולח מייל עם דוח מצורף...");
-
+    // שליחת המייל עם הקובץ כמצורף
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: process.env.GMAIL_SUPPORT,
@@ -55,14 +47,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       text: "מצורף דוח השבתה שנוצר במערכת.",
       attachments: [
         {
-          filename: file.name,
+          filename: "downtime_report.xlsx",
           content: fileBuffer,
-          contentType: file.type,
         },
       ],
     });
 
-    console.log("הדוח נשלח בהצלחה!");
     return NextResponse.json({ message: "הדוח נשלח בהצלחה!" }, { status: 200 });
   } catch (error: unknown) {
     console.error("שגיאה בשליחת המייל:", error);
@@ -72,10 +62,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 }
 
+// השארת ה-GET יכולה לסייע להפעלת שליחה תקופתית אוטומטית
 export async function GET(): Promise<NextResponse> {
+  // כאן אפשר ליצור את הדוח באופן אוטומטי ולשלוח במייל
+  // הקוד ישמש לדוחות תקופתיים אוטומטיים
+  // לדוגמא, אפשר להשתמש בשירות כמו CRON שיקרא לנקודת קצה זו
+
   try {
-    console.log("התקבלה בקשת GET לשליחת דוח תקופתי...");
-    // כאן ניתן ליצור דוח אוטומטי ולשלוח אותו
+    // הקוד הקיים שלך שמייצר ושולח במייל את הדוח
+    // ...
+
     return NextResponse.json(
       { message: "דוח תקופתי נשלח בהצלחה!" },
       { status: 200 }
