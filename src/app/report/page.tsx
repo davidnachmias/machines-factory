@@ -1,10 +1,6 @@
-import DowntimeReport from '@/components/DowntimeReport'
-import React from 'react'
+import React from "react";
+import DowntimeReport from "@/components/DowntimeReport";
 
-export default function page() {
-    return (
-        <div >
-            <DowntimeReport />
-        </div>
-    )
+export default function DowntimeReportPage() {
+  return <DowntimeReport />;
 }

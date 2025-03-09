@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ExportToExcel from "./ExportToExcel";
+import SkeletonTable from "./SkeletonTable";
 
 interface ClosedFault {
   machineName: string;
@@ -19,6 +20,7 @@ export default function DowntimeReport() {
   const [closedFaults, setClosedFaults] = useState<ClosedFault[]>([]);
   const [filteredFaults, setFilteredFaults] = useState<ClosedFault[]>([]);
   const [machineNames, setMachineNames] = useState<string[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [selectedMachine, setSelectedMachine] = useState<string>("כל המכונות");
 
   const [totalDowntime, setTotalDowntime] = useState({
@@ -80,6 +82,7 @@ export default function DowntimeReport() {
 
   useEffect(() => {
     const fetchClosedFaults = async () => {
+      setLoading(true);
       try {
         const response = await axios.get<ClosedFault[]>("/api/closed-faults");
 
@@ -113,6 +116,8 @@ export default function DowntimeReport() {
         setMachineNames(["כל המכונות", ...Array.from(namesSet)]);
       } catch (error) {
         console.error("Error fetching closed faults:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -151,6 +156,9 @@ export default function DowntimeReport() {
     setTotalRepairCost(totalCost);
   }, [selectedMachine, closedFaults]);
 
+  if (loading) {
+    return <SkeletonTable />;
+  }
   return (
     <div className="p-8 mt-10 flex flex-col items-center">
       <h2 className="text-xl font-bold mb-4">דוח השבתה ועלות</h2>
