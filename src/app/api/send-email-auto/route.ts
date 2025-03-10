@@ -7,13 +7,8 @@ import Machine from "@/models/Machine";
 export async function GET(): Promise<NextResponse> {
   try {
     if (mongoose.connection.readyState === 0) {
-      await mongoose.connect(
-        process.env.MONGODB_URI as string,
-        {
-          useNewUrlParser: true,
-          useUnifiedTopology: true,
-        } as any
-      );
+      // פשוט מחבר בלי אפשרויות נוספות
+      await mongoose.connect(process.env.MONGODB_URI as string);
     }
 
     const machines = await Machine.find().lean();
