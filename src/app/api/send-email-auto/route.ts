@@ -1,36 +1,92 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import * as XLSX from "xlsx";
 import nodemailer from "nodemailer";
+import mongoose from "mongoose";
+import Machine from "@/models/Machine";
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
   try {
-    // קבלת הקובץ מבקשת ה-POST
-    const formData = await request.formData();
-    const file = formData.get("file") as File | null;
-
-    if (!file) {
-      return NextResponse.json(
-        { error: "לא התקבל קובץ. יש לצרף קובץ Excel." },
-        { status: 400 }
+    if (mongoose.connection.readyState === 0) {
+      await mongoose.connect(
+        process.env.MONGODB_URI as string,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        } as any
       );
     }
 
-    // המרת הקובץ לבאפר
-    const fileBuffer = Buffer.from(await file.arrayBuffer());
+    const machines = await Machine.find().lean();
+    const MAX_ROWS = 500; // מספר השורות המקסימלי
 
-    // בדיקת הגדרות הדוא"ל
-    if (
-      !process.env.GMAIL_USER ||
-      !process.env.GMAIL_PASS ||
-      !process.env.GMAIL_SUPPORT
-    ) {
-      console.error("חסרים פרטי התחברות לדואר אלקטרוני");
-      return NextResponse.json(
-        { error: "תצורת שרת הדואר לא הוגדרה כראוי" },
-        { status: 500 }
-      );
-    }
+    const data = machines.flatMap((machine) =>
+      machine.faults.map((fault) => ({
+        machineN: machine.name,
+        machineT: machine.type,
+        formType: fault.formType,
+        description: fault.description,
+        date: fault.date,
+        status: fault.status,
+        closedDate: fault.closedDate || "",
+        partsUsed: fault.partsUsed || "",
+        repairCost: fault.repairCost ? `₪${fault.repairCost}` : "0",
+        repairDesc: fault.repairDescription || "",
+      }))
+    );
 
-    // יצירת טרנספורטר של Nodemailer
+    const limitedData = data.slice(0, MAX_ROWS);
+
+    // הוספת שורת רווח לפני תאריך הדוח
+    limitedData.push({
+      machineN: "",
+      machineT: "",
+      formType: "",
+      description: "",
+      date: "",
+      status: "",
+      closedDate: "",
+      partsUsed: "",
+      repairCost: "",
+      repairDesc: "",
+    });
+
+    // הוספת שורה אחרונה עם תאריך ושעה נוכחיים
+    const currentDateTime = new Date().toLocaleString("he-IL", {
+      timeZone: "Asia/Jerusalem",
+    });
+
+    limitedData.push({
+      machineN: "",
+      machineT: "",
+      formType: "",
+      description: "",
+      date: "",
+      status: "",
+      closedDate: "",
+      partsUsed: "",
+      repairCost: "",
+      repairDesc: `תאריך יצירת הדוח: ${currentDateTime}`,
+    });
+
+    const ws = XLSX.utils.json_to_sheet(limitedData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "דוח תקלות");
+
+    ws["!cols"] = [
+      { wch: 20 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 30 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 40 },
+    ];
+
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -39,47 +95,28 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       },
     });
 
-    // שליחת המייל עם הקובץ כמצורף
     await transporter.sendMail({
       from: process.env.GMAIL_USER,
       to: process.env.GMAIL_SUPPORT,
-      subject: "דוח השבתה - נשלח מהמערכת",
-      text: "מצורף דוח השבתה שנוצר במערכת.",
+      subject: "דוח תקלות - עדכון אוטומטי",
+      text: "מצורף דוח תקלות שנשלח אוטומטית.",
       attachments: [
         {
-          filename: "downtime_report.xlsx",
-          content: fileBuffer,
+          filename: "faults_report.xlsx",
+          content: excelBuffer,
         },
       ],
     });
 
-    return NextResponse.json({ message: "הדוח נשלח בהצלחה!" }, { status: 200 });
-  } catch (error: unknown) {
-    console.error("שגיאה בשליחת המייל:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "שגיאה לא ידועה בשליחת המייל";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
-  }
-}
-
-// השארת ה-GET יכולה לסייע להפעלת שליחה תקופתית אוטומטית
-export async function GET(): Promise<NextResponse> {
-  // כאן אפשר ליצור את הדוח באופן אוטומטי ולשלוח במייל
-  // הקוד ישמש לדוחות תקופתיים אוטומטיים
-  // לדוגמא, אפשר להשתמש בשירות כמו CRON שיקרא לנקודת קצה זו
-
-  try {
-    // הקוד הקיים שלך שמייצר ושולח במייל את הדוח
-    // ...
-
     return NextResponse.json(
-      { message: "דוח תקופתי נשלח בהצלחה!" },
+      { message: "Email sent successfully!" },
       { status: 200 }
     );
   } catch (error: unknown) {
-    console.error("שגיאה בשליחת דוח תקופתי:", error);
-    const errorMessage =
-      error instanceof Error ? error.message : "שגיאה לא ידועה";
-    return NextResponse.json({ error: errorMessage }, { status: 500 });
+    console.error("Error sending email:", error);
+    return NextResponse.json(
+      { error: "Failed to send email" },
+      { status: 500 }
+    );
   }
 }

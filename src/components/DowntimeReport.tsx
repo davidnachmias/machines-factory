@@ -229,14 +229,11 @@ export default function DowntimeReport() {
 
           {filteredFaults.length > 0 && (
             <tr className="bg-gray-300 font-bold">
-              <td className="border p-2 text-center" colSpan={4}>
+              <td className="border p-2 text-center" colSpan={5}>
                 סך הכל
               </td>
-              <td className="border p-2">
-                {totalDowntime.days ?? 0} ימים, {totalDowntime.hours ?? 0} שעות,{" "}
-                {totalDowntime.minutes ?? 0} דקות
-              </td>
               <td className="border p-2">{totalRepairCost.toFixed(2)} ₪</td>
+              <td className="border p-2"></td>
             </tr>
           )}
         </tbody>
