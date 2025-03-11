@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function AdminLogin() {
   const [password, setPassword] = useState("");
@@ -9,8 +10,12 @@ export default function AdminLogin() {
 
   const handleLogin = async () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      document.cookie = `admin-auth=${password}; path=/`;
-      router.push("/report");
+      Cookies.set("admin-auth", password, { path: "/" });
+
+      // הוספת השהיה כדי לוודא שהעוגיה נשמרה לפני הניווט
+      setTimeout(() => {
+        router.push("/report");
+      }, 100);
     } else {
       setError("סיסמה שגויה");
     }

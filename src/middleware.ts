@@ -22,9 +22,13 @@ export function middleware(req: NextRequest) {
     const url = new URL("/login", req.url);
     url.searchParams.set("returnUrl", req.nextUrl.pathname);
 
-    // הוספת מצב "no-cache" כדי לוודא שהשינוי מחלחל מיד
     const response = NextResponse.redirect(url);
-    response.headers.set("Cache-Control", "no-store");
+    response.headers.set(
+      "Cache-Control",
+      "no-store, no-cache, must-revalidate, proxy-revalidate"
+    );
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
     return response;
   }
 
@@ -39,7 +43,12 @@ export function middleware(req: NextRequest) {
       url.searchParams.set("returnUrl", req.nextUrl.pathname);
 
       const response = NextResponse.redirect(url);
-      response.headers.set("Cache-Control", "no-store");
+      response.headers.set(
+        "Cache-Control",
+        "no-store, no-cache, must-revalidate, proxy-revalidate"
+      );
+      response.headers.set("Pragma", "no-cache");
+      response.headers.set("Expires", "0");
       return response;
     }
   }
