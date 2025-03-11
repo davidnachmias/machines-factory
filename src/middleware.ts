@@ -21,10 +21,13 @@ export function middleware(req: NextRequest) {
   ) {
     const url = new URL("/login", req.url);
     url.searchParams.set("returnUrl", req.nextUrl.pathname);
-    return NextResponse.redirect(url);
+
+    // הוספת מצב "no-cache" כדי לוודא שהשינוי מחלחל מיד
+    const response = NextResponse.redirect(url);
+    response.headers.set("Cache-Control", "no-store");
+    return response;
   }
 
-  // בדיקת סיסמת אדמין עבור עמוד הדוח
   if (req.nextUrl.pathname === "/report") {
     const adminCookie = req.cookies.get("admin-auth");
 
@@ -34,7 +37,10 @@ export function middleware(req: NextRequest) {
     ) {
       const url = new URL("/admin-login", req.url);
       url.searchParams.set("returnUrl", req.nextUrl.pathname);
-      return NextResponse.redirect(url);
+
+      const response = NextResponse.redirect(url);
+      response.headers.set("Cache-Control", "no-store");
+      return response;
     }
   }
 

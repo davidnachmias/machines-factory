@@ -1,60 +1,63 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Cookies from 'js-cookie';
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Cookies from "js-cookie";
 
 export default function Login() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // קבל את הנתיב שממנו הופנה המשתמש
-  const returnUrl = searchParams?.get('returnUrl') || '/';
-  
+
+  const returnUrl = searchParams?.get("returnUrl") || "/";
+
   const handleLogin = async () => {
-    const correctPassword = process.env.NEXT_PUBLIC_SITE_PASSWORD || '';
-    
+    const correctPassword = process.env.NEXT_PUBLIC_SITE_PASSWORD || "";
+
     if (password === correctPassword) {
-      // הגדר את הקוקי עם הסיסמה
-      Cookies.set('auth', password, { expires: 0.5 });
-      
-      // החזר את המשתמש לדף המקורי
-      router.push(returnUrl);
+      // הגדרת העוגייה בצד הלקוח
+      Cookies.set("auth", password, { expires: 0.5, path: "/" });
+
+      // הכרחת רענון כדי שהמידלוור יזהה את השינוי מיד
+      window.location.href = returnUrl;
     } else {
-      setError('סיסמה לא נכונה');
-      setTimeout(() => setError(''), 3000);
+      setError("סיסמה לא נכונה");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleLogin();
     }
   };
-  
+
   // בדוק אם המשתמש כבר מחובר
   useEffect(() => {
-    const authCookie = Cookies.get('auth');
+    const authCookie = Cookies.get("auth");
     if (authCookie === process.env.NEXT_PUBLIC_SITE_PASSWORD) {
-      router.push(returnUrl);
+      router.replace(returnUrl);
     }
   }, [returnUrl, router]);
-  
+
   return (
     <div className="flex min-h-screen bg-gray-100 items-center justify-center px-4">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
         <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">התחברות</h2>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            התחברות
+          </h2>
           <p className="mt-2 text-sm text-gray-600">
             הזן את הסיסמה כדי לגשת לאתר
           </p>
         </div>
-        
+
         <div className="mt-8 space-y-6">
           <div>
-            <label htmlFor="password" className="sr-only">סיסמה</label>
+            <label htmlFor="password" className="sr-only">
+              סיסמה
+            </label>
             <input
               id="password"
               name="password"
@@ -68,13 +71,16 @@ export default function Login() {
               dir="rtl"
             />
           </div>
-          
+
           {error && (
-            <div className="text-red-500 text-sm text-center font-medium" dir="rtl">
+            <div
+              className="text-red-500 text-sm text-center font-medium"
+              dir="rtl"
+            >
               {error}
             </div>
           )}
-          
+
           <div>
             <button
               onClick={handleLogin}
