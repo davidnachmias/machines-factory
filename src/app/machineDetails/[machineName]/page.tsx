@@ -68,6 +68,7 @@ export default function DynamicMachineDetails() {
                 תקלות:
               </h3>
 
+              {/* Desktop view */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="min-w-full bg-white border-collapse rounded-lg">
                   <thead className="bg-gray-200">
@@ -165,6 +166,72 @@ export default function DynamicMachineDetails() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              {/* Mobile view */}
+              <div className="block md:hidden space-y-4 mt-4">
+                {machineData.faults.map((fault: Fault) => (
+                  <div
+                    key={fault._id}
+                    className="bg-gray-50 rounded-lg shadow p-4"
+                  >
+                    <p>
+                      <strong>שם מכונה:</strong> {machineData.name}
+                    </p>
+                    <p>
+                      <strong>סוג מכונה:</strong> {machineData.type}
+                    </p>
+                    <p>
+                      <strong>תיאור:</strong> {fault.description}
+                    </p>
+                    <p>
+                      <strong>תאריך:</strong>{" "}
+                      {new Date(fault.date).toLocaleDateString("he-IL", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })}
+                    </p>
+                    <p>
+                      <strong>סטטוס:</strong>{" "}
+                      <span
+                        className={`px-2 py-1 rounded ${
+                          fault.status === "open"
+                            ? "bg-red-200"
+                            : "bg-green-200"
+                        }`}
+                      >
+                        {fault.status === "open" ? "פתוחה" : "סגורה"}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>סוג טופס:</strong> {fault.formType}
+                    </p>
+                    <p>
+                      <strong>חלפים שהוחלפו:</strong> {fault.partsUsed}
+                    </p>
+                    <p>
+                      <strong>עלות:</strong>{" "}
+                      {fault.repairCost?.toString() || ""}
+                    </p>
+                    <p>
+                      <strong>תאריך סגירה:</strong>{" "}
+                      {fault.closedDate
+                        ? new Date(fault.closedDate).toLocaleDateString(
+                            "he-IL",
+                            {
+                              year: "numeric",
+                              month: "2-digit",
+                              day: "2-digit",
+                            }
+                          )
+                        : ""}
+                    </p>
+                    <p>
+                      <strong>תיאור תיקון:</strong> {fault.repairDescription}
+                    </p>
+                  </div>
+                ))}
               </div>
             </div>
           ) : (
