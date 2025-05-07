@@ -31,10 +31,12 @@ export default function CloseFault() {
 
   const handleFaultClosed = (faultId: string, status: string) => {
     setAuthorized(false);
-    if (status === "cancelled") return
-    setFaults(faults.map(fault =>
-      fault._id === faultId ? { ...fault, status: 'closed' } : fault
-    ));
+    if (status === "cancelled") return;
+    setFaults(
+      faults.map((fault) =>
+        fault._id === faultId ? { ...fault, status: "closed" } : fault
+      )
+    );
   };
 
   return (
@@ -58,14 +60,31 @@ export default function CloseFault() {
           </thead>
           <tbody>
             {faults.map((fault) => (
-              <tr key={fault._id} className="hover:bg-gray-50 border-b border-gray-300">
-                <td className={`py-2 px-4 border border-gray-300 font-bold ${fault.status === "closed" ? "text-green-600" : "text-red-600"}`}>
+              <tr
+                key={fault._id}
+                className="hover:bg-gray-50 border-b border-gray-300"
+              >
+                <td
+                  className={`py-2 px-4 border border-gray-300 font-bold ${
+                    fault.status === "closed"
+                      ? "text-green-600"
+                      : "text-red-600"
+                  }`}
+                >
                   {fault.machineName}
                 </td>
-                <td className="py-2 px-4 border border-gray-300">{fault.machineType}</td>
-                <td className="py-2 px-4 border border-gray-300">{fault.formType}</td>
-                <td className="py-2 px-4 border border-gray-300">{fault.date}</td>
-                <td className="py-2 px-4 border border-gray-300">{fault.description}</td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {fault.machineType}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {fault.formType}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {fault.date}
+                </td>
+                <td className="py-2 px-4 border border-gray-300">
+                  {fault.description}
+                </td>
                 <td className="py-2 px-4 border border-gray-300 text-center">
                   {fault.status === "closed" ? (
                     <span className="py-2 px-8 bg-green-500 text-white rounded-md text-sm">
@@ -93,8 +112,18 @@ export default function CloseFault() {
             key={fault._id}
             className="bg-white p-4 shadow-md rounded-md border border-gray-200"
           >
-            <p className={fault.status === "closed" ? "text-green-600 text-lg font-semibold" : "text-red-600 text-lg font-semibold"}>{fault.machineName}</p>
-            <p className="text-sm text-gray-500">סוג מכונה: {fault.machineType}</p>
+            <p
+              className={
+                fault.status === "closed"
+                  ? "text-green-600 text-lg font-semibold"
+                  : "text-red-600 text-lg font-semibold"
+              }
+            >
+              {fault.machineName}
+            </p>
+            <p className="text-sm text-gray-500">
+              סוג מכונה: {fault.machineType}
+            </p>
             <p className="text-sm text-gray-500">סוג פעולה: {fault.formType}</p>
             <p className="text-sm text-gray-500">תאריך פתיחה: {fault.date}</p>
             <p className="text-sm text-gray-500">תיאור: {fault.description}</p>
@@ -115,6 +144,11 @@ export default function CloseFault() {
           </div>
         ))}
       </div>
+      {faults.length === 0 && (
+        <div className="mt-10 text-center text-gray-500 text-lg font-medium">
+          אין תקלות פתוחות כרגע 🎉
+        </div>
+      )}
 
       {/* פופאפ סיסמה */}
       {isPasswordPopupOpen && selectedFault && (
@@ -129,7 +163,12 @@ export default function CloseFault() {
 
       {/* טופס סגירת תקלה לאחר אימות סיסמה */}
       {isAuthorized && selectedFault && (
-        <CloseFaultForm fault={selectedFault} onClose={(status: string) => handleFaultClosed(selectedFault._id, status)} />
+        <CloseFaultForm
+          fault={selectedFault}
+          onClose={(status: string) =>
+            handleFaultClosed(selectedFault._id, status)
+          }
+        />
       )}
     </div>
   );
