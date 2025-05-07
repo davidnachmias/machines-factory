@@ -42,7 +42,7 @@ export default function AdminLogin() {
   }, [returnUrl, router]);
 
   return (
-    <div className="flex min-h-screen bg-gray-100 items-center justify-center px-4">
+    <div className="flex min-h-screen  items-center justify-center px-4">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-lg">
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">

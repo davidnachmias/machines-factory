@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
 import React from "react";
 import axios from "axios";
 
 export default function AddMachineForm() {
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const formData = new FormData(form);
     const data = {
-      machineName: formData.get('machineName') as string,
-      machineType: formData.get('machineType') as string,
+      machineName: formData.get("machineName") as string,
+      machineType: formData.get("machineType") as string,
     };
 
     try {
-      const response = await axios.post('/api/add-machine', data, {
+      const response = await axios.post("/api/add-machine", data, {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
 
       if (response.status === 200) {
-        alert('Machine added successfully!');
+        alert("Machine added successfully!");
         form.reset(); // Reset the form here
       } else {
         alert(`Failed to add machine: ${response.data.error}`);
       }
     } catch (error: unknown) {
-      let errorMessage = 'Unknown error occurred';
+      let errorMessage = "Unknown error occurred";
       if (error instanceof Error) {
         errorMessage = error.message;
       }
@@ -36,14 +36,17 @@ export default function AddMachineForm() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 p-4">
+    <div className="flex justify-center items-center min-h-screen p-4 ">
       <div className="bg-white p-8 shadow-lg rounded-lg border border-gray-300 w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-700">
           הוספת מכונה
         </h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           <div>
-            <label htmlFor="machineName" className="block text-right mb-2 text-gray-700">
+            <label
+              htmlFor="machineName"
+              className="block text-right mb-2 text-gray-700"
+            >
               שם מכונה:
             </label>
             <input
@@ -56,7 +59,10 @@ export default function AddMachineForm() {
             />
           </div>
           <div>
-            <label htmlFor="machineType" className="block text-right mb-2 text-gray-700">
+            <label
+              htmlFor="machineType"
+              className="block text-right mb-2 text-gray-700"
+            >
               סוג מכונה:
             </label>
             <input

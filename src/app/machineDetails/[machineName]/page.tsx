@@ -27,7 +27,7 @@ export default function DynamicMachineDetails() {
   };
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-4 md:p-8 bg-gray-100">
+    <div className="flex flex-col items-center min-h-screen p-4 md:p-8 ">
       <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-gray-800">
         פרטי מכונה
       </h1>
